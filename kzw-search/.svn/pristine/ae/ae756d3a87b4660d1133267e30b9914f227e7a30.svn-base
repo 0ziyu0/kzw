@@ -1,0 +1,47 @@
+package com.kzw.search.service.impl;
+
+import javax.annotation.Resource;
+
+import org.apache.solr.client.solrj.SolrQuery;
+import org.springframework.stereotype.Service;
+
+import com.kzw.search.dao.SearchDao;
+import com.kzw.search.pojo.SearchResult;
+import com.kzw.search.service.SearchService;
+
+@Service
+public class SearchServiceImpl implements SearchService {
+
+	@Resource
+	private SearchDao searchDao;
+	
+	
+	@Override
+	public SearchResult searchQuery(String queryString, Integer page,
+			Integer rows) throws Exception {
+		SolrQuery query = new SolrQuery();
+		query.setQuery(queryString);
+		query.setStart((page-1)*rows);
+		query.setRows(rows);
+		// 设置默认搜索域
+		query.set("df", "item_title");
+		// 设置高亮显示
+		query.setHighlight(true);
+		query.addHighlightField("item_title");
+		query.setHighlightSimplePre("<font class=\"skcolor_ljg\">");
+		query.setHighlightSimplePost("</font>");
+		// 查询
+		SearchResult searchResult = searchDao.search(query);
+		// 总页数
+		Long recordCount = searchResult.getRecordCount();
+		int pageCount = (int) (recordCount/rows);
+		if(recordCount % rows > 0) {
+			++pageCount;
+		}
+		searchResult.setPageCount(pageCount);
+		searchResult.setCurPage(page);
+		
+		return searchResult;
+	}
+
+}

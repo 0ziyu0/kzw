@@ -1,0 +1,62 @@
+package com.kzw.portal.service.impl;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import com.kzw.common.pojo.KZWResult;
+import com.kzw.common.util.HttpClientUtil;
+import com.kzw.portal.pojo.SearchResult;
+import com.kzw.portal.service.SearchService;
+
+@Service("searchService")
+public class SearchServiceImpl implements SearchService {
+
+	@Value("${SEARCH_BASE_URL}")
+	private String SEARCH_BASE_URL;
+	
+	@Override
+	public SearchResult search(String keyword, int page, int rows) {
+		
+		Map<String, String> param = new HashMap<>();
+		SearchResult result = null;
+		param.put("keyword", keyword);
+		param.put("page", page + "");
+		param.put("rows", rows + "");
+		
+		String json = HttpClientUtil.doGet(SEARCH_BASE_URL, param);
+		if(StringUtils.isNotBlank(json)) {
+			KZWResult kzwResult = KZWResult.formatToPojo(json, SearchResult.class);
+			result = (SearchResult) kzwResult.getData();
+		}
+		
+		return result;
+	}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

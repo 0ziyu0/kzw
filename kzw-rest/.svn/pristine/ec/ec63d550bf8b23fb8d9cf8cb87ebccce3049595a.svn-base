@@ -1,0 +1,75 @@
+package com.kzw.rest.service.impl;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.kzw.common.pojo.KZWResult;
+import com.kzw.common.util.IDUtils;
+import com.kzw.mapper.TbPartnerMapper;
+import com.kzw.mapper.TbStoreMapper;
+import com.kzw.mapper.TbStrategyMapper;
+import com.kzw.pojo.TbPartner;
+import com.kzw.pojo.TbStore;
+import com.kzw.pojo.TbStrategy;
+import com.kzw.rest.service.StoreService;
+
+@Service("storeService")
+public class StoreServiceImpl implements StoreService {
+	
+	@Resource
+	private TbPartnerMapper partnerMapper;
+	
+	@Resource
+	private TbStoreMapper storeMapper;
+	
+	@Resource
+	private TbStrategyMapper strategyMapper;
+
+	@Override
+	public TbPartner selectPartnerByUserId(Long id) {
+		
+		List<TbPartner> list = partnerMapper.selectByUserId(id);
+		
+		if(list.size() > 0) {
+			return list.get(0);
+		}
+		
+		return null;
+	}
+
+	@Override
+	public KZWResult insertStore(TbStore store) {
+		try{
+			long storeId = IDUtils.genItemId();
+			store.setId(storeId);
+			storeMapper.insertStore(store);
+			
+			// 把自己插入合伙人
+			TbPartner partner = new TbPartner();
+			partner.setStoreId(storeId);
+			partner.setUserId(store.getUserId());
+			partnerMapper.insertSelective(partner);
+			List<TbStrategy> list = new ArrayList<>();
+			// 插入默认7天策略
+			String[] weekDays = {"星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"};
+			for(int i = 0; i < 7; i++) {
+				TbStrategy strategy = new TbStrategy();
+				strategy.setStoreId(storeId);
+				strategy.setOther(weekDays[i]);
+				list.add(strategy);
+			}
+			strategyMapper.insertStrategy(list);
+			return KZWResult.ok();
+		} catch(Exception e) {
+			e.printStackTrace();
+			return KZWResult.build(400, "数据有误...");
+		}
+		
+	}
+	
+	
+}

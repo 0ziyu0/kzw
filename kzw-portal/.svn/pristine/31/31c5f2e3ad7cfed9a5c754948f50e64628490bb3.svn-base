@@ -1,0 +1,115 @@
+package com.kzw.portal.service.impl;
+
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import com.kzw.common.pojo.KZWResult;
+import com.kzw.common.util.HttpClientUtil;
+import com.kzw.common.util.JsonUtils;
+import com.kzw.pojo.TbItem;
+import com.kzw.pojo.TbItemDesc;
+import com.kzw.pojo.TbItemParam;
+import com.kzw.pojo.TbItemParamItem;
+import com.kzw.portal.pojo.PortalItem;
+import com.kzw.portal.service.ItemService;
+
+@Service("itemService")
+public class ItemServiceImpl implements ItemService {
+
+	@Value("${REST_BASE_URL}")
+	private String REST_BASE_URL;
+	@Value("${REST_ITEM_BASE_URL}")
+	private String REST_ITEM_BASE_URL;
+	@Value("${REST_ITEM_DESC_URL}")
+	private String REST_ITEM_DESC_URL;
+	@Value("${REST_ITEM_PARAM_URL}")
+	private String REST_ITEM_PARAM_URL;
+	
+	
+	@Override
+	public TbItem getItemById(Long itemId) {
+		
+		String json = HttpClientUtil.doGet(REST_BASE_URL + REST_ITEM_BASE_URL + itemId);
+		if(StringUtils.isNotBlank(json)) {
+			KZWResult kzwResult = KZWResult.formatToPojo(json, PortalItem.class);
+			return (TbItem) kzwResult.getData();
+		}
+		
+		return null;
+	}
+
+
+	@Override
+	public String getItemDescById(Long itemId) {
+		
+		String json = HttpClientUtil.doGet(REST_BASE_URL + REST_ITEM_DESC_URL + itemId);
+		KZWResult kzwResult = KZWResult.formatToPojo(json, TbItemDesc.class);
+		TbItemDesc itemDesc = (TbItemDesc) kzwResult.getData();
+		
+		String desc = itemDesc.getItemDesc();
+		
+		return desc;
+	}
+
+	@Override
+	public String getItemParamById(Long itemId) {
+		
+		String json = HttpClientUtil.doGet(REST_BASE_URL + REST_ITEM_PARAM_URL + itemId);
+		
+		KZWResult kzwResult = KZWResult.formatToPojo(json, TbItemParamItem.class);
+		TbItemParamItem itemParamItem = (TbItemParamItem) kzwResult.getData();
+		List<Map> mapList = JsonUtils.jsonToList(itemParamItem.getParamData(), Map.class);
+		
+		StringBuffer sBuffer = new StringBuffer();
+		sBuffer.append("<table cellpadding=\"0\" cellspacing=\"1\" width=\"100%\" border=\"0\" class=\"Ptable\">\n");
+		sBuffer.append("	<tbody>\n");
+		for (Map map : mapList) {
+			sBuffer.append("		<tr>\n");
+			sBuffer.append("			<th class=\"tdTitle\" colspan=\"2\">" + map.get("group") + "</th>\n");
+			sBuffer.append("		</tr>\n");
+			List<Map> mapList2 = (List<Map>) map.get("params");
+			for (Map map2 : mapList2) {
+				sBuffer.append("		<tr>\n");
+				sBuffer.append("			<td class=\"tdTitle\">" + map2.get("k") + "</td>\n");
+				sBuffer.append("			<td>" + map2.get("v") + "</td>\n");
+				sBuffer.append("		</tr>\n");
+			}
+		}
+		
+		sBuffer.append("	</tbody>\n");
+		sBuffer.append("</table>");
+
+		return sBuffer.toString();
+	}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

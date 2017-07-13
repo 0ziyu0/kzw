@@ -1,0 +1,1937 @@
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<!DOCTYPE html >
+<html>
+<head>
+<title>个人中心</title>
+<script type="text/javascript" src="/js/jquery-1.8.0.min.js"></script>
+<script type="text/javascript"
+	src="/js/jquery_easyui/locale/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript"
+	src="/js/jquery_easyui/jquery.easyui.min.js"></script>
+<link rel="stylesheet" type="text/css"
+	href="/js/jquery_easyui/themes/default/easyui.css" />
+<link rel="stylesheet" type="text/css"
+	href="/js/jquery_easyui/themes/icon.css" />
+<link rel="stylesheet" type="text/css"
+	href="/js/jquery_easyui/themes/demo1.css" />
+
+<style type="text/css">
+.edui-popup-content.edui-default {
+	height: auto !important;
+}
+
+</style>
+
+
+
+
+<!-- <script type="text/javascript"> 
+/*这个应该是从getGridData获得初始化的参数加载到表格之中
+ *得到条件选择框中的默认选择的值，传到后台将数据传输过来
+ *传1表示是默认载入，2是查询转入 
+ */
+ function tableList(id){//常见问题
+	  var  m = "#" + id;
+    $(m).datagrid(
+  		  {
+  		  url:"/syssuggestionController/SuggestionCommonData",   		 
+            nowrap: true,
+  		  pagination:true,//采用分页
+  		  rownumbers: true,
+  		  striped: true,
+  		  fitColumns: true,
+  		 pageSize:15,//分页大小  
+         pageList:[5,10,15,20],//每页的个数 
+  		  singleSelect: true,
+  		queryParams:{ 				
+  			"CREATE_TIME":$('#CREATE_TIME').datebox('getValue') ,
+  			"CREATE_TIME_2":$('#CREATE_TIME_2').datebox('getValue')  
+  			},
+  		  toolbar:[
+      		 {
+      		text:'新增问题',
+      		iconCls:'icon-add',
+      		handler:function(){
+      			getcombobox("#module_selcom");
+      		  $('#dlg_addcom').dialog(
+      				  {
+      					  onOpen:function(){
+      						  $(".window-mask").css("z-index","800");
+      						  $(".panel").css("z-index","900");
+      						  $(".window-shadow").css("z-index","899");
+      					  }, 
+      				      onMove:function(left,top){ 
+      				    	  $(".window-mask").css("z-index","800");
+      						  $(".panel").css("z-index","900");
+      						  $(".window-shadow").css("z-index","899");
+      				      },
+      				      onResize:function(width,height){
+      				    	  $(".window-mask").css("z-index","800");
+      						  $(".panel").css("z-index","900");
+      						  $(".window-shadow").css("z-index","899");
+      				      }
+      				  });
+      			
+  			  $('#dlg_addcom').dialog('open').dialog('setTitle','新增问题');
+  		
+
+  		  }
+      	},
+      	{
+      		text:'修改',
+      		iconCls:'icon-edit',
+      		handler: function(){
+      		change(id);
+  		  }
+      	},
+      	{
+      		text:'禁用',
+      		iconCls:'icon-edit',
+      		handler:function(){
+      		var flag=1;
+      		forbidden(id,flag);
+  		  }
+      	},
+      	{
+      		text:'启用',
+      		iconCls:'icon-edit',
+      		handler: function(){
+      		var flag=2;
+      		forbidden(id,flag);
+  		  }
+      	}
+  		  ],
+  		  columns:[[
+		//	{
+		//  field : 'MODULE_NAME',
+		 // title : '应用',
+		 // width : 180,
+		 // halign: 'center',
+		//  align: 'center',
+	//  formatter : function(value, row, index) {
+		//				return value;
+		 
+		 // }
+		 // },
+  		  {
+  		  field : 'SUGGESTION',
+  		  title : '标题',
+  		  width : 180,
+  		  halign: 'center',
+  		  align: 'center',
+  		  formatter : function(value, row, index) {
+  						return value;
+  		 
+  		  }
+  		  },{
+  		  field : 'CREATE_DATE',
+  		  title : '发布时间',
+  		  width : 200,
+  		  halign: 'center',
+  		  align: 'center',
+  		  formatter : function(value, row, index) {
+  			 return  formatDate(value);
+  		     
+  		  }
+  		  },
+  		  {
+  		  field : 'CREATE_NAME',
+  		  title : '发布者',
+  		  width : 180,
+  		  halign: 'center',
+  		  align: 'center',
+  		  formatter : function(value, row, index) {
+  		     return value;
+  		  }
+  		  },
+  		  {
+  		  field : 'USE',
+  		  title : '实用量',
+  		  width : 180,
+  		  halign: 'center',
+  		  align: 'center',
+  		  formatter : function(value, row, index) {
+  				return  value;
+  		  }
+  		  },
+  		  {
+  		  field : 'NOUSE',
+  		  title : '不实用量 ',
+  		  width : 180,
+  		  halign: 'center',
+  		  align: 'center',
+  		  formatter : function(value, row, index) {
+  			return value; 							
+  		  }
+  		  }	
+  		  ,
+  		  {
+  	  		  field : 'STATE',
+  	  		  title : '状态',
+  	  		  width : 180,
+  	  		  halign: 'center',
+  	  		  align: 'center',
+  	  		  formatter : function(value, row, index) {
+  	  			  if(value==1){
+  	  				return  "启用"; 
+  	  			  }else if(value==0){
+  	  				 return "<font color='red'>禁用</font> ";;  
+  	  			  }
+  	  			  
+  	  				
+  	  		  }
+  	  		  },
+  	  		  
+  		{
+  	  		  field : 'TAGNAMES',
+  	  		  title : '操作',
+  	  		  width : 180,
+  	  		  halign: 'center',
+  	  		  formatter : function(value, row, index) {
+				 if(id=="tt1"){
+						var ss="3";
+							 var s1 =  "<a  onclick='Maint("+index+","+ss+")'  style='margin-left: 20px;'>查看详情</a>";
+						}
+  	  		     return s1; 	  		      
+  	  		  }
+  	  		  },  		
+  		  ]],  onLoadSuccess: function () {
+          }
+  		  }
+  		  );}
+  		  
+  		  	  
+ function tableList1(id){//模块管理
+	  var  m = "#" + id;
+   $(m).datagrid(
+ 		  {
+ 		  url:"/syssuggestionController/getModules",   		 
+           nowrap: true,
+ 		  pagination:true,//采用分页
+ 		  rownumbers: true,
+ 		  striped: true,
+ 		  fitColumns: true,
+ 		 pageSize:15,//分页大小  
+        pageList:[5,10,15,20],//每页的个数 
+ 		  singleSelect: true,
+ 		 queryParams:{ 				
+   			"CREATE_TIME":$('#CREATE_TIME').datebox('getValue') ,
+   			"CREATE_TIME_2":$('#CREATE_TIME_2').datebox('getValue')  
+   			},  
+ 		  toolbar:[
+			{
+				text:'新增应用',
+				iconCls:'icon-add',
+				handler: function(){
+					  $('#dlg_5').window("open");
+			  }
+			},
+     		 {
+     		text:'新增联系人',
+     		iconCls:'icon-add',
+     		handler:function(){ 
+     			getcombobox("#module_selN");
+     			 $('#dlg_4').window("open");
+     		
+ 		  }
+     	},
+     	{
+     		text:'修改',
+     		iconCls:'icon-edit',
+     		handler: function(){
+     			change(id);
+ 		  }
+     	},
+     	{
+     		text:'禁用',
+     		iconCls:'icon-edit',
+     		handler:function(){
+     			var flag=1;
+     			forbidden(id,flag);
+ 		  }
+     	},
+     	{
+     		text:'启用',
+     		iconCls:'icon-edit',
+     		handler: function(){
+     			var flag=2;
+     			forbidden(id,flag);
+ 		  }
+     	}
+ 		  ],
+ 		  columns:[[
+ 		  {
+ 		  field : 'MODULE_NAME',
+ 		  title : '应用',
+ 		  width : 100,
+ 		  halign: 'center',
+ 		  formatter : function(value, row, index) {
+ 		     return value;
+ 		  }
+ 		  },
+ 		  {
+ 		  field : 'USERNAME',
+ 		  title : '姓名',
+ 		  width : 180,
+ 		  halign: 'center',
+ 		  align: 'center',
+ 		  formatter : function(value, row, index) {
+ 			return value; 			  
+ 			  }
+ 		 
+ 		  },
+ 		  {
+ 		  field : 'PHONE',
+ 		  title : '电话号码',
+ 		  width : 180,
+ 		  halign: 'center',
+ 		  align: 'center',
+ 		  formatter : function(value, row, index) {
+ 			 return  value;
+ 		     
+ 		  }
+ 		  },
+ 		  {
+ 		  field : 'EMAIL',
+ 		  title : '邮箱',
+ 		  width : 180,
+ 		  halign: 'center',
+ 		  align: 'center',
+ 		  formatter : function(value, row, index) {
+ 		     return value;
+ 		  }
+ 		  } ,
+ 		 {
+ 	 		  field : 'CREATE_DATE',
+ 	 		  title : '创建时间',
+ 	 		  width : 180,
+ 	 		  halign: 'center',
+ 	 		  align: 'center',
+ 	 		  formatter : function(value, row, index) {
+
+ 	  			if ( typeof(value) == "undefined") { 
+ 	  				return "";
+ 	  			} 
+ 	 		
+ 	 				return  formatDate(value);
+ 	 		  }
+ 	 		  } ,	
+ 		 {
+ 	 		  field : 'STATE',
+ 	 		  title : '状态',
+ 	 		  width : 180,
+ 	 		  halign: 'center',
+ 	 		  align: 'center',
+ 	 		  formatter : function(value, row, index) {
+ 	 			  //0表示禁用，1表示启用
+ 	 			 if(value==1){
+  	 				return "启用";
+  	 			  }
+  	 			if(value==0){
+  	 				return "<font color='red'>禁用</font> ";
+ 	 			  }					
+ 	 			  
+ 	 		  }
+ 	 		  }
+ 		 		
+ 		  ]],  onLoadSuccess: function () {
+         }
+ 		  }
+ 		  );}
+ 
+ 
+//意见反馈页面初始化数据
+ function tableList2(id){
+	  var  m = "#" + id;
+   $(m).datagrid(
+ 		  {
+ 	  url:"/syssuggestionController/SuggestionMainPageData",   		 
+           nowrap: true,
+ 		  pagination:true,//采用分页
+ 		  rownumbers: true,
+ 		  striped: true,
+ 		  fitColumns: true,
+ 		 pageSize:15,//分页大小  
+        pageList:[5,10,15,20],//每页的个数 
+ 		  singleSelect: true,
+ 		 queryParams:{ 				
+   			"CREATE_TIME":$('#CREATE_TIME').datebox('getValue') ,
+   			"CREATE_TIME_2":$('#CREATE_TIME_2').datebox('getValue')  
+   			},
+ 		  toolbar:[
+     	{
+     		text:'禁用',
+     		iconCls:'icon-edit',
+     		handler:function(){
+     			var flag=1;
+     			forbidden(id,flag);
+ 		  }
+     	},
+     	{
+     		text:'启用',
+     		iconCls:'icon-edit',
+     		handler: function(){
+     			var flag=2;
+     			forbidden(id,flag);
+ 		  }
+     	}
+ 		  ], 
+ 		  columns:[[
+ 		   		   
+ 		  {
+ 		  field : 'MODULE_NAME',
+ 		  title : '应用',
+ 		  width : 100,
+ 		  halign: 'center',
+ 		  formatter : function(value, row, index) {
+ 		     return value;
+ 		  }
+ 		  }
+ 		  ,
+ 		  {
+ 		  field : 'SUGGESTION_TYPE',
+ 		  title : '反馈类型',
+ 		  width : 180,
+ 		  halign: 'center',
+ 		  align: 'center',
+ 		  formatter : function(value, row, index) {
+ 			  //  反馈类型1系统问题2功能意见3新需求0其他
+ 			  switch (value){
+ 			  case "1":return "系统问题" ;break;
+ 			  case "2":return "更新意见"; break;
+ 			  case "3":return "新需求" ; break;
+ 			  case "4":return "其它";  break;
+ 			  
+ 			  }
+ 		 
+ 		  }
+ 		  },{
+ 		  field : 'CREATE_DATE',
+ 		  title : '反馈时间',
+ 		  width : 180,
+ 		  halign: 'center',
+ 		  align: 'center',
+ 		  formatter : function(value, row, index) {
+ 			 return  formatDate(value);
+ 		     
+ 		  }
+ 		  },
+ 		  {
+ 		  field : 'CREATE_PHONE',
+ 		  title : '反馈用户',
+ 		  width : 180,
+ 		  halign: 'center',
+ 		  align: 'center',
+ 		  formatter : function(value, row, index) {
+ 		     return value;
+ 		  }
+ 		  },
+ 		  {
+ 		  field : 'CREATE_ORG_ID',
+ 		  title : '所属机构',
+ 		  width : 180,
+ 		  halign: 'center',
+ 		  align: 'center',
+ 		  formatter : function(value, row, index) {
+ 				return  value;
+ 		  }
+ 		  },
+ 		  {
+ 		  field : 'MODULE_RELATION_USER',
+ 		  title : '责任人 ',
+ 		  width : 180,
+ 		  halign: 'center',
+ 		  align: 'center',
+ 		  formatter : function(value, row, index) {
+ 			return value; 							
+ 		  }
+ 		  },
+ 		 {
+ 	 		  field : 'STATE',
+ 	 		  title : '状态',
+ 	 		  width : 180,
+ 	 		  halign: 'center',
+ 	 		  align: 'center',
+ 	 		  formatter : function(value, row, index) {
+ 	 			  if(value==1){
+ 	 				return "启用";
+ 	 			  }
+ 	 			if(value==0){
+ 	 				return "<font color='red'>禁用</font> ";
+	 			  }					
+ 	 		  }
+ 	 		  },
+ 		  {
+ 		  field : 'REPLY',
+ 		  title : '是否回复',
+ 		  width : 100,
+ 		  halign: 'center',
+ 		  align: 'center',
+ 		  formatter : function(value, row, index) {
+
+ 			if ( typeof(value) == "undefined") { 
+ 				return "否";
+ 			}  else if ( typeof(value) == "String" || value.length == 0 ){
+ 				return "否";		
+ 			}else{
+ 				return "是";
+ 			} 			
+ 		  }
+ 		  },	
+ 		{
+ 	  		  field : 'TAGNAMES',
+ 	  		  title : '操作',
+ 	  		  width : 120,
+ 	  		  halign: 'center',
+ 	  		  formatter : function(value, row, index) {
+			if(id=="tt"){
+			var ss="1";
+				 var s1 =  "<a  onclick='Maint("+index+","+ss+")'  style='margin-left: 20px;'>查看详情</a>";
+			}if(id=="tt3"){
+				var ss="2";
+				 var s1 =  "<a  onclick='Maint("+index+","+ss+")' style='margin-left: 20px;'>查看详情</a>";
+			
+			}
+ 	  		     return s1; 	  		      
+ 	  		  }
+ 	  		  },  		
+ 		  ]],  onLoadSuccess: function () {
+         }
+ 		  }
+ 		  );}
+ 		  
+ 		  
+ 
+   /* 初始化时间 */
+  function datainit(){
+	  
+	   
+      var mydate = new Date();
+      var yy=mydate.getFullYear();
+      var ss=mydate.getMonth();
+      var mm=parseInt(mydate.getMonth())+1;//返回0-11
+      var dd=mydate.getDate();
+      var mm1=parseInt(mm)-1;
+      var yy1=yy;
+      var dd1="";
+      if(mm1==0){
+    	  yy1=parseInt(yy)-1;
+    	  mm1=12;
+      }
+      var day=new Date(yy,parseInt(mm)+1,0);//返回上个月的最后一天
+      var day1=new Date(yy1,parseInt(mm1)+1,0);
+    	//获取天数：
+	  var daycount = day.getDate();
+    	var daycount1=day1.getDate();
+    if(dd==daycount){
+    	if(parseInt(daycount)>parseInt(daycount1)){
+    		 dd1=parseInt(daycount1);
+    	}else{
+    		dd1=parseInt(daycount);
+    	}
+    	}else{
+    		dd1=dd;
+    	}
+      var begtime=yy1+ "-" + (mm1 < 10 ? ("0" + mm1) : mm1) + "-" + (dd1 < 10 ? ("0" + dd1) : dd1);
+      var endtime=yy+ "-" + (mm < 10 ? ("0" + mm) : mm) + "-" + (dd < 10 ? ("0" + dd) : dd);   
+      $("#CREATE_TIME").datebox("setValue", begtime);
+      $("#CREATE_TIME_2").datebox("setValue",endtime);
+  }
+  		//时间处理  
+  function formatDate(now) {
+		var now = new Date(now);
+		var year = now.getFullYear();
+		var month = now.getMonth() + 1;
+		var date = now.getDate();
+		var hour = now.getHours();
+		var minute = now.getMinutes();
+		var second = now.getSeconds();
+		return year + "-" + (month < 10 ? ("0" + month) : month) + "-" 
+				+ (date < 10 ? ("0" + date) : date)
+				+ " " + hour + ":" 
+				+ (minute < 10 ? ("0" + minute) : minute) + ":" 
+				+ (second < 10 ? ("0" + second) : second);
+	}
+		  
+  		 
+//意见反馈禁用，启用
+  function forbidden(id,flag){
+	var id="#"+id;
+  	var row = $(id).datagrid("getSelected");
+  	if (!row){
+  		$.messager.alert('我的消息', "请选择一条记录进行操作！", 'info');
+  		return;
+  	}
+  	if(row.STATE==0&&flag==1){
+  		$.messager.alert('我的消息', "该用户已经处于禁用状态！", 'info');
+  		return;
+  	}
+	if(row.STATE==1&&flag==2){
+  		$.messager.alert('我的消息', "该用户已经处于启用状态！", 'info');
+  		return;
+  	}
+
+  	if(flag==1 && (id=="#tt3"||id=="#tt1" || id=="#tt")){
+  		$.messager.confirm("确认", "您确定要禁用该记录么？", function(r){
+  	  		if (r){
+  	  			$.post("/syssuggestionController/ForbiddenStart", 
+  	  					{
+  	  						"ID": row.ID,
+  	  						"flag":flag
+  	  					}, function(data){
+  	  						if (data.success){
+  	  							$.messager.alert('我的消息', "已禁用", 'info', function(){
+  	  								getUpData(id);
+  	  							});
+  	  						}else{
+  	  							$.messager.alert('我的消息', "禁用失败！", 'info');
+  	  						}
+  	  					}, "json");
+  	  	}}  	
+  		);
+  		
+  	} else if(flag==2 && (id=="#tt3"||id=="#tt1"|| id=="#tt")){
+  		$.messager.confirm("确认", "您确定启用该记录么？", function(r){
+  	  		if (r){
+  	  			$.post("/syssuggestionController/ForbiddenStart", 
+  	  					{
+  	  						"ID": row.ID,
+  	  					    "flag":flag
+  	  					}, function(data){
+  	  						if (data.success){
+  	  							$.messager.alert('我的消息', "已启用", 'info', function(){
+  	  								getUpData(id);
+  	  							});
+  	  						}else{
+  	  							$.messager.alert('我的消息', "启用失败！", 'info');
+  	  						}
+  	  					}, "json");
+  	  	}}		
+  		);
+  	}  
+  	else if(flag==1 && id =="#tt2"){
+  		$.messager.confirm("确认", "您确定要禁用该记录么？", function(r){
+  	  		if (r){
+  	  			$.post("/syssuggestionController/ModuleForbidden", 
+  	  					{
+  	  						"ID": row.ID,
+  	  						"flag":flag
+  	  					}, function(data){
+  	  						if (data.success){
+  	  							$.messager.alert('我的消息', "已禁用", 'info', function(){
+  	  								getUpData(id);
+  	  							});
+  	  						}else{
+  	  							$.messager.alert('我的消息', "禁用失败！", 'info');
+  	  						}
+  	  					}, "json");
+  	  	}}  	
+  		);
+  		
+  	}  	
+  	else if(flag==2 && id =="#tt2"){
+  		$.messager.confirm("确认", "您确定启用该记录么？", function(r){
+  	  		if (r){
+  	  			$.post("/syssuggestionController/ModuleForbidden", 
+  	  					{
+  	  						"ID": row.ID,
+  	  					    "flag":flag
+  	  					}, function(data){
+  	  						if (data.success){
+  	  							$.messager.alert('我的消息', "已启用", 'info', function(){
+  	  								getUpData(id);
+  	  							});
+  	  						}else{
+  	  							$.messager.alert('我的消息', "启用失败！", 'info');
+  	  						}
+  	  					}, "json");
+  	  	}}		
+  		);
+  	}  
+  	
+ 
+  }	
+  
+//模块管理禁用，启用试验代码,桌面备份 
+  function Moduleforbid(id,flag){
+	var id="#"+id;
+  	var row = $(id).datagrid("getSelected");
+  	if (!row){
+  		$.messager.alert('我的消息', "请选择一条记录进行操作！", 'info');
+  		return;
+  	}
+
+  	if(row.STATE==0&&flag==1){
+  		$.messager.alert('我的消息', "该用户已经处于禁用状态！", 'info');
+  		return;
+  		
+  	}
+ 	if(row.STATE==1&&flag==2){
+  		$.messager.alert('我的消息', "该用户已经处于启用状态！", 'info');
+  		return;
+  		
+  	}
+  	alert(id);
+  	if(flag==1 && id =="#tt2"){
+  		$.messager.confirm("确认", "您确定要禁用该记录么？", function(r){
+  	  		if (r){
+  	  			$.post("/syssuggestionController/ModuleForbidden", 
+  	  					{
+  	  						"ID": row.ID,
+  	  						"flag":flag
+  	  					}, function(data){
+  	  						if (data.success){
+  	  							$.messager.alert('我的消息', "已禁用", 'info', function(){
+  	  								getUpData(id);
+  	  							});
+  	  						}else{
+  	  							$.messager.alert('我的消息', "禁用失败！", 'info');
+  	  						}
+  	  					}, "json");
+  	  	}}  	
+  		);
+  		
+  	}if(flag==2 && id =="#tt2"){
+  		$.messager.confirm("确认", "您确定启用该记录么？", function(r){
+  	  		if (r){
+  	  			$.post("/syssuggestionController/ModuleForbidden", 
+  	  					{
+  	  						"ID": row.ID,
+  	  					    "flag":flag
+  	  					}, function(data){
+  	  						if (data.success){
+  	  							$.messager.alert('我的消息', "已启用", 'info', function(){
+  	  								getUpData(id);
+  	  							});
+  	  						}else{
+  	  							$.messager.alert('我的消息', "启用失败！", 'info');
+  	  						}
+  	  					}, "json");
+  	  	}}		
+  		);
+  	}  	
+ 
+  }	
+  
+  
+  //用于更新变更后的表格数据
+  function getUpData(id){ 
+		$(id).datagrid("reload", {
+			"CREATE_TIME": $('#CREATE_TIME').datebox('getValue'),
+			"CREATE_TIME_2": $('#CREATE_TIME_2').datebox('getValue')				
+			}); 	
+	$(id).datagrid("unselectAll");
+  	} 
+  
+  
+  //查询方法
+  function getData(id){
+		var id ="#"+id;
+		
+		if(id=="#feedquery"){	
+			//查询公用方法，外面传id根据id 判断走不同的datagrid;
+			if (!$("#ss_unit").combotree("getValue")){
+				$.messager.alert('我的消息', "请选择所属机构，再进行查询", 'info');
+				return;
+			}
+			
+			$("#tt").datagrid("load", {
+				"module":$("#module_sel").find("option:selected").text(),
+				"freedbacktype":$("#freedbacktype").val(),
+				"ss_unit": $("#ss_unit").combotree("getValue"),
+				"CREATE_TIME": $('#CREATE_TIME').datebox('getValue'),
+				"CREATE_TIME_2": $('#CREATE_TIME_2').datebox('getValue'),
+				"replystate": $("#replystate").val(),
+				"suggstate":$("#suggstate").val()
+			});
+			$("#tt").datagrid("unselectAll");			
+		}
+		
+		if(id=="#feedquery1"){	
+			//查询公用方法，外面传id根据id 判断走不同的datagrid;
+			if (!$("#ss_unit1").combotree("getValue")){
+				$.messager.alert('我的消息', "请选择所属机构，再进行查询", 'info');
+				return;
+			}
+			$("#tt3").datagrid("load", {
+				"module":$("#module_sel1").find("option:selected").text(),
+				"freedbacktype":$("#freedbacktype1").val(),
+				"ss_unit": $("#ss_unit1").combotree("getValue"),
+				"CREATE_TIME": $('#CREATE_TIME').datebox('getValue'),
+				"CREATE_TIME_2": $('#CREATE_TIME_2').datebox('getValue'),
+				"replystate": $("#replystate1").val(),
+				"suggstate":$("#suggstate1").val()
+			});
+			$("#tt3").datagrid("unselectAll");	
+		}
+		
+		if(id=="#modulequry"){
+			$("#tt2").datagrid("load", {
+				"STATE":$("#muser_state").val(),
+				"module":$("#module_sel2").find("option:selected").text(),
+				"CREATE_TIME": $('#CREATE_TIME').datebox('getValue'),
+				"CREATE_TIME_2": $('#CREATE_TIME_2').datebox('getValue')
+			});
+			$("#tt2").datagrid("unselectAll");	
+			
+		}
+		
+		if(id=="#commonquery"){
+			var title=$.trim($("#title").val());
+			$("#tt1").datagrid("load", {
+				"module":$("#module_com").find("option:selected").text(),
+				"SUGGESTION":title,
+				"STATE":$("#que_state").val(),
+				"CREATE_TIME": $('#CREATE_TIME').datebox('getValue'),
+				"CREATE_TIME_2": $('#CREATE_TIME_2').datebox('getValue')
+			});
+			$("#tt1").datagrid("unselectAll");	
+			
+		}
+		
+		
+			
+	}
+  
+  function combotree(id){
+		var id ="#" + id ;		
+		$(id).combotree({ 
+		    url:"/syssuggestionController/getSsUnitTreeNew?unit="+"12" ,
+		    panelWidth: 350,
+		    onBeforeExpand:function(node) { 
+		    	var reqUrl = "/syssuggestionController/getSsUnitChildrenTree?parentId=" + node.id+"&unit="+"12";
+				$(id).combotree("tree").tree("options").url = reqUrl;
+			},
+			onLoadSuccess: function(){
+				//$("#ss_unit").combotree("setValue", $("#sel_role").find("option:selected").attr("ARR_VALUE"));
+		    }
+		}); 
+	}
+  
+  
+	//详情跳转窗口函数
+	function Maint( index,xx){
+	//  var id ="#"+id;
+	if(xx=="1"){
+		var id="#tt"
+	}if(xx=="2"){
+		var id="#tt3"
+	}if(xx=="3"){
+		var id="#tt1";
+	}
+	if(id=="#tt"||id=="#tt3"){
+		var nbsp="&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp";
+		$("#d_2").css("border","initial");
+		$('#dlg_2').dialog('open').dialog('setTitle','详情');
+		
+		 var row = $(id).datagrid('getData').rows[index];	
+		var m=row.REPLY;
+		$('#d_1').html(nbsp+row.SUGGESTION);
+		$('#d_3').html(row.ID);//suggestion的id
+		$('#d_4').html(id);//table的id
+		if ( typeof(m) == "undefined") { 
+			$('#d_2').html(nbsp+"无");
+			}else{
+				$('#d_2').html(nbsp+m);
+			}	
+	}	
+	if(id=="#tt1"){
+		$('#dlg_comque').dialog('open').dialog('setTitle','详情');	
+		 var row = $(id).datagrid('getData').rows[index];	
+		var m=row.REPLY;
+		var date =formatDate(row.CREATE_DATE);
+		$('#d_a').html(row.CREATE_NAME);
+		$('#d_b').html(date);
+		$('#d_c').html(row.SUGGESTION);
+		if ( typeof(m) == "undefined") { 
+			$('#d_d').html("无");
+			}else{
+				$('#d_d').html(m);
+			}	
+	}	
+		
+		
+	}
+
+
+ //详情页面按钮
+	var d_2m='';
+	var d_2n='';
+	function back(){
+		d_2m=$("#d_2").text();
+		$("#d_2").attr("contentEditable",'true');
+	$("#d_2").css("border","1px solid #0000FF");
+	}
+	function save(){
+		
+		d_2n=$("#d_2").html();
+		
+		d_2n=d_2n.replace(/&nbsp;/ig, "");
+		d_2n=$.trim(d_2n);
+		if (!d_2n){
+			$.messager.alert('我的消息', "请填写有效回复再做保存！", 'info');
+			return;
+		}
+		 var id =$("#d_3").text();
+		 var ll=$("#d_4").text() ;
+		if(d_2n!=""&&d_2n!=d_2m){
+			$.ajax({
+			    url: "/syssuggestionController/freeBack",    
+			    dataType: "json",  
+			    contentType: "application/x-www-form-urlencoded; charset=utf-8", 
+			    data: { 
+			    	"REPLY":d_2n,
+			    	"ID":id
+			    	},  
+			    type: "post",  
+			    success: function(req) {
+					$.messager.alert('我的消息', "保存成功！", 'info');	
+					//$("#d_2").removeAttr("contentEditable");
+					//$("#d_2").css("border","initial");
+					getUpData($("#d_4").text());
+					
+			    },
+			    error: function() {
+					$.messager.alert('我的消息', "请求出现错误！", 'error');	
+			    }
+			});
+			
+		} if(d_2n.replace()==""){
+			$.messager.alert('我的消息', "保存的内容不能为空！", 'error');	
+		} 
+	}
+//下拉应用树
+function getcombobox(id){
+	$(id).combobox({ 
+	     url:'/syssuggestionController/getModuleData', 
+			//   method:'get',
+			    editable:false, //不可编辑状态
+			    cache: false,
+			    valueField:'id',        
+			    textField:'MODULE_NAME',
+			    panelHeight:'auto'
+			});
+	
+}	
+	
+//页面初始化
+	$(function() {
+		$('#commonque').bind('click', function() {
+			tables("commonque");
+		});
+		$('#module').bind('click', function() {
+			tables("module");
+		});
+		$('#feedback').bind('click', function() {
+			tables("feedback");
+		});
+
+		
+		datainit();//初始化时间
+		combotree("ss_unit")//初始化树形下拉
+		tableList2("tt");// 初始化主界面
+		
+		//意见反馈查询
+		$("#feedquery").bind("click", function(){
+			getData("feedquery");
+		});
+	
+		//隐藏列
+	  $("#tt").datagrid('hideColumn', 'SUGGESTION'); 
+	  $("#tt").datagrid('hideColumn', 'ID'); 
+	  $("#tt2").datagrid('hideColumn', 'ID'); 
+	  $("#tt1").datagrid('hideColumn', 'REPLY'); 
+	  $("#tt1").datagrid('hideColumn', 'ID');	  	  
+	  $("#tt1").datagrid('hideColumn', 'STATE');
+  
+	  
+	
+		
+		
+	});
+	
+	
+
+		
+
+	
+
+	var tables = function(id) {
+		var pra = "commonque";
+		var pra1 = "module";
+		var pra2 = "feedback";
+		var html = "";
+		//常见问题
+		if (id == pra) {
+			html += "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
+			html += "<tr>"
+			html += "<td valign='top'>"
+			html += "<div class='box_tit01'  width='100%'>"
+			html += "<h3>常见问题</h3>"
+			html += "</div>"
+			html += "<div style='height: 25px;margin-top: 10px;'>"
+			html += "<div class='fll ml10' style='font-size: 12px;width: 200px;'>"
+			        + "标 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;题："
+					+"<input type='text' id='title' style='width:131px;height:15px;'> "
+					+ "</div>"	
+					
+				//	+ "<div class='fll ml10' style='font-size: 12px;width: 200px;'>"
+				//+ "应&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;用："
+			 	//	+ "<select id='module_com' style='width:120px;height: 20px;' > "				
+				//	+"<option>全部</option>"
+				//	+"<c:forEach var='modulename' items='${module}'>"
+				//	+"<option >${modulename.MODULE_NAME}</option>"
+				//	+"</c:forEach> </select> "
+				//	+ "</div>"
+					
+				    + "<div class='fll ml10' style='font-size: 12px;width: 190px;'>"
+				    + "状 &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;态："
+	                +"<select id='que_state' style='width:120px;height: 20px;' > "				
+					+"<option value='0'>全部</option>"
+					+"<option value='1'>启用</option>"
+					+"<option value='2'>禁用</option>"
+					+" </select> "
+					+ "</div>"					
+					+ "<div class='fll ml10' style='font-size: 12px;width: 190px;'>"
+					+ "<label>创建时间：</label> "
+					+ "<input id='CREATE_TIME' type='text' 	class='easyui-datebox'  style='width: 120px;'data-options='editable:false'>"
+					+ "</div>"
+					+ "<div class='fll ml10' style='font-size: 12px;width: 150px;'> "
+					+ "<label>至</label> "
+					+ "<input id='CREATE_TIME_2' type='text' class='easyui-datebox' style='width: 120px;' data-options='editable:false'>"
+					+ "</div>"
+					+ "<div class='fll ml10' style='font-size: 12px;width: 80px;text-align:right'>"
+					+ "<a  style='margin-bottom: 8px;' class='easyui-linkbutton' data-options=' iconCls:\"icon-search\"  ' id='commonquery'>查询</a>"
+					+ "</div> "
+					+ "</div>"				
+					+"</td></tr>"								
+					+ "<tr>"
+					+"<td><table id='tt1'></table></td></tr></table>"
+			$('#rightdiv').html(html);
+			$.parser.parse($("#rightdiv"));
+			datainit();//初始化时间
+			tableList("tt1");
+			//常见问题查询
+			$("#commonquery").bind("click", function(){
+				getData("commonquery");
+			});
+
+		}
+		//模块管理
+		if (id == pra1) {
+			html += "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
+			html += "<tr>"
+			html += "<td valign='top'>"
+			html += "<div class='box_tit01'  width='100%'>"
+			html += "<h3>应用管理</h3>"
+			html += "</div>"
+			 		+ "<div style='height: 25px;margin-top: 10px;'>"
+			 		+ "<div class='fll ml10' style='font-size: 12px;width: 190px;'>"
+					+ "应&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;用："
+			 		+ "<select id='module_sel2' style='width:120px;height: 20px;' > "				
+					+"<option>全部</option>"
+					+"<c:forEach var='modulename' items='${module}'>"
+					+"<option >${modulename.MODULE_NAME}</option>"
+					+"</c:forEach> </select> "
+					+ "</div>"
+				    + "<div class='fll ml10' style='font-size: 12px;width: 190px;'>"
+				    + "状 &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;态："
+	                +"<select id='muser_state' style='width:120px;height: 20px;' > "				
+					+"<option value='0'>全部</option>"
+					+"<option value='1'>启用</option>"
+					+"<option value='2'>禁用</option>"
+					+" </select> "
+					+ "</div>"	
+					+ "<div class='fll ml10' style='font-size: 12px;width: 190px;'>"
+					+ "<label>创建时间：</label> "
+					+ "<input id='CREATE_TIME' type='text' 	class='easyui-datebox'  style='width: 120px;'data-options='editable:false'>"
+					+ "</div>"
+					+ "<div class='fll ml10' style='font-size: 12px;width: 150px;'> "
+					+ "<label>至</label> "
+					+ "<input id='CREATE_TIME_2' type='text' class='easyui-datebox' style='width: 120px;' data-options='editable:false'>"
+					+ "</div>"
+					+ "<div class='fll ml10' style='font-size: 12px;width: 80px;text-align:right'>"
+					+ "<a  style='margin-bottom: 8px;' class='easyui-linkbutton' data-options=' iconCls:\"icon-search\"  ' id='modulequry'>查询</a>"
+					+ "</div> "
+					+ "</div>"
+					+ "<tr><td><table id='tt2'></table></td></tr></table>"
+			$('#rightdiv').html(html);
+			$.parser.parse($("#rightdiv"));
+			datainit();//初始化时间
+			tableList1("tt2");
+			//模块查询
+			$("#modulequry").bind("click", function(){
+				getData("modulequry");
+			});
+		}
+		//意见反馈
+		if (id == pra2) {
+			html += "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
+					+ "<tr>"
+					+ "<td valign='top'>"
+					+ "<div class='box_tit01'  width='100%'>"
+					+ "<h3>意见反馈</h3>"
+					+ "</div>"
+					+ "<div style='height: 25px;margin-top: 10px;'>"
+					+ "<div class='fll ml10' style='font-size: 12px;width: 200px;'>"
+					+ "应 &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;用："
+				 	+ "<select id='module_sel1' style='width:120px;height: 20px;' >"
+					+"<option>全部</option>"
+					+"<c:forEach var='modulename' items='${module}'>"
+					+"<option >${modulename.MODULE_NAME}</option>"
+					+"</c:forEach> </select> "  	
+					+ "</div>"
+					+ "<div class='fll ml10' style='font-size: 12px;width: 200px;'> 反馈类型："
+					+ "<select id='freedbacktype1' style='width: 120px;height: 20px;' >"
+					+"<option  value='0'>全部</option>"
+					+ "<option value ='1'>系统问题</option>"
+					+"<option value ='2'>更新意见</option>"
+					+" <option value='3'>新需求</option>"
+					 +"<option value='4'>其它</option ></select>"
+					+ "</div>"			
+					+ "<div class='fll ml10' style='font-size: 12px;width: 200px;'> 所属机构："
+				    +"<input id='ss_unit1'  class='easyui-combotree' style='width:132px;'/>"
+					+ "</div>"
+					+ "<div class='fll ml10' style='font-size: 12px;width: 200px;'> 是否回复："
+					+ "<select id='replystate1' style='width:120px;height: 20px;'>"
+					+ "<option 	value='0'>全部</option><option value='1'>是</option><option value='2'>否</option></select>"
+					+ "</div></td></tr>"
+					+ "<tr><td valign='top'>"
+					+ "<div class='fll ml10'  style='font-size: 12px;width: 190px;'> <label>创建时间：</label> "
+					+ "<input id='CREATE_TIME'  type='text' class='easyui-datebox' style='width: 120px;'  data-options='editable:false'></div>"
+					+ "<div class='fll ml10' style='font-size: 12px;width: 150px;'><label>至</label> "
+					+ "<input id='CREATE_TIME_2'  type='text'  class='easyui-datebox' style='width: 120px;' data-options='editable:false'> "
+					+ "</div>"
+				    +"<div class='fll ml10' style='font-size: 12px;width: 200px;'>"					
+				    +"状 态： <select id='suggstate1'  style='width:120px;height: 20px;'>"
+				    +"<option value='0'>全部</option>"
+				    +"<option value='1'>启用</option>"
+				    +"<option value='2'>禁用</option>"
+				    +"</select></div>"
+					+ "<div class='fll ml10'  style='font-size: 12px;width: 240px;text-align:right'>"
+					+ "<a   style='margin-bottom: 8px;' href='javascript:void(0)' class='easyui-linkbutton'	data-options='iconCls:\"icon-search\"'  id='feedquery1'>查询</a>"
+					+ "</div></td></tr>"
+					+ "<tr><td><table id='tt3'></table></td></tr></table>"
+			$('#rightdiv').html(html);	
+			$.parser.parse($("#rightdiv"));
+			datainit();
+			tableList2("tt3");
+			combotree("ss_unit1");		
+			//意见反馈查询2
+			$("#feedquery1").bind("click", function(){
+				getData("feedquery1");
+			});
+			
+			
+		}
+
+	}
+</script>
+
+
+</head>
+-->
+<body>
+	<div class="easyui-layout" style="width:100%;height:500px;">
+
+		<div data-options="region:'west',split:true" title="应用选择"
+			style="width:100%;" class="panel-body layout-body">
+			<div>
+				<a
+					style="width:68%;padding-left:25%;padding-top:7px;padding-bottom:7px"
+					class="easyui-linkbutton" data-options="plain:true" id="feedback">意见反馈</a>
+				<hr />
+				<a
+					style="width:68%;padding-left:25%;padding-top:7px;padding-bottom:7px"
+					class="easyui-linkbutton" data-options="plain:true" id="commonque">常见问题</a>
+				<hr />
+				<a
+					style="width:68%;padding-left:25%;padding-top:7px;padding-bottom:7px"
+					class="easyui-linkbutton" data-options="plain:true" id="module">应用管理</a>
+				<hr />
+			</div>
+		</div>
+
+
+		<div style="text-align:center;" data-options="region:'center'">
+			<table width="100%" border="0" cellspacing="0" cellpadding="0">
+				<tr>
+					<td valign="top">
+
+						<table width="100%" border="0" cellspacing="0" cellpadding="0"
+							id="rightdiv">
+							<tr>
+								<td valign="top">
+
+									<div class="box_tit01" width="100%">
+										<h3>意见反馈</h3>
+									</div>
+
+									<div style="height: 25px;margin-top: 10px;">
+
+										<div class="fll ml10" style="font-size: 12px;width: 200px;">
+											应 &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;用： <select id="module_sel"
+												style="width:120px;height: 20px;">
+												<option>全部</option>
+												<c:forEach var="modulename" items="${module}">
+													<option>${modulename.MODULE_NAME}</option>
+												</c:forEach>
+											</select>
+										</div>
+
+										<div class="fll ml10" style="font-size: 12px;width: 200px;">
+											反馈类型： <select id="freedbacktype"
+												style="width: 120px;height: 20px;">
+												<option value='0'>全部</option>
+												<option value='1'>系统问题</option>
+												<option value='2'>更新意见</option>
+												<option value='3'>新需求</option>
+												<option value='4'>其它</option
+											</select> </select>
+										</div>
+
+										<div class="fll ml10" style="font-size: 12px;width: 200px;">
+											所属机构： <input id="ss_unit" class="easyui-combotree"
+												style="width:132px;" />
+										</div>
+
+										<div class="fll ml10" style="font-size: 12px;width: 200px;">
+											是否回复： <select id="replystate"
+												style="width:120px;height: 20px;">
+												<option value='0'>全部</option>
+												<option value='1'>是</option>
+												<option value='2'>否</option>
+											</select>
+										</div>
+
+									</div>
+								</td>
+							</tr>
+
+							<tr>
+								<td valign="top">
+
+
+									<div class="fll ml10" style="font-size: 12px;width: 190px;">
+										<label>创建时间：</label> <input id="CREATE_TIME" type="text"
+											class='easyui-datebox' style="width: 120px;"
+											data-options="editable:false">
+									</div>
+
+									<div class="fll ml10" style="font-size: 12px;width: 150px;">
+										<label>至</label> <input id="CREATE_TIME_2" type="text"
+											class='easyui-datebox' style="width: 120px;"
+											data-options="editable:false">
+									</div>
+
+									<div class="fll ml10" style="font-size: 12px;width: 200px;">
+										状 态： <select id="suggstate" style="width:120px;height: 20px;">
+											<option value='0'>全部</option>
+											<option value='1'>启用</option>
+											<option value='2'>禁用</option>
+										</select>
+									</div>
+
+
+									<div class="fll ml10"
+										style="font-size: 12px;width: 240px;text-align:right">
+										<a style="margin-bottom: 8px;" href="javascript:void(0)"
+											class="easyui-linkbutton"
+											data-options="iconCls:'icon-search'" id="feedquery">查询</a>
+									</div>
+
+								</td>
+							</tr>
+
+							<tr>
+								<td>
+									<table id="tt">
+									</table>
+								</td>
+							</tr>
+
+
+						</table>
+
+
+					</td>
+				</tr>
+			</table>
+		</div>
+
+
+
+
+
+
+
+
+		<!-- 主界面结束 -->
+		<!-- (点击新增弹出)编辑窗口 -->
+
+
+		<!-- 意见反馈详情的对话框 -->
+		<div id="dlg_2" class="easyui-dialog"
+			data-options="title:'新增',maximizable:true,minimizable:true,iconCls:'icon-save',resizable:true,modal:true,closed:true"
+			style="width:600px;height:400px;padding:10px 20px" closed="true"
+			buttons="#dlg2-buttons">
+			<div class="easyui-layout" data-options="fit:true">
+
+				<div data-options="region:'north',split:true"
+					style="width:100px;height:155px">
+					<label>内容：</label>
+					<div id="d_1" style="font-weight: normal;margin-top:10px;"></div>
+					<div id="d_3" style="display: none;"></div>
+					<div id="d_4" style="display: none;"></div>
+				</div>
+
+				<div data-options="region:'south',split:true"
+					style="width:100px;height:155px;">
+					
+					<label>回复：</label>
+					<div id="d_2" contenteditable="true"
+						style="font-weight: normal;margin-top:10px;height:105px;overflow:auto;">
+					</div>
+					
+				</div>
+ 			
+
+
+			<div id="dlg2-buttons">
+				 <a
+					href="javascript:void(0)" class="easyui-linkbutton"
+					iconCls="icon-save" onclick="save()">保存</a>
+			</div>
+		</div>
+
+
+
+		<!-- 		新增联系人 -->
+		<div id="dlg_4" class="easyui-dialog" title="新增联系人"
+			style="width:520px;height:270px;"
+			data-options="maximizable:true,minimizable:true,iconCls:'icon-save',resizable:true,modal:true,closed:true"
+			buttons="#dlg_4-buttons">
+			<div data-options="region:'center'">
+				<table width="100%" border="0" cellspacing="0" cellpadding="0">
+					<tr>
+						<td valign="top">
+							<div style="height: 25px;margin-top: 10px;">
+								<div class="fll ml10" style="font-size: 12px;width: 230px;">
+									姓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;名： <input
+										type="text" id="module_username"
+										style="width:131px;height: 20px;" class="easyui-validatebox"
+										data-options="required:true" />
+								</div>
+								<div class="fll ml10" style="font-size: 12px;width: 230px;">
+									手&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;机： <input
+										type="text" id="module_phone"
+										style="width:131px;height: 20px;" class="easyui-validatebox"
+										data-options="required:true" validType="length[11,11]"
+										missingMessage="请输入有效的手机号码" />
+								</div>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td valign="top">
+							<div style="height: 25px;margin-top: 10px;">
+								<div class="fll ml10" style="font-size: 12px;width: 230px;">
+									邮&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;箱： <input
+										type="text" id="module_email"
+										style="width:131px;height: 20px;" class="easyui-validatebox" />
+								</div>
+
+								<div class="fll ml10" style="font-size: 12px;width: 230px;">
+									应&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;用 ： <select
+										id='module_selN' style='width:120px;height: 20px;'>
+
+									</select>
+								</div>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td valign="top">
+							<div style="height: 25px;margin-top: 10px;">
+								<div class="fll ml10" style="font-size: 12px;width: 230px;">
+									状&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;态： <select
+										id="module_user_state" style="width:131px;height: 20px;">
+										<option value="1">启用</option>
+										<option value="0">禁用</option>
+									</select>
+								</div>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div data-options="region:'south'" style="height: 40px;">
+				<div class="fll ml10 btn_css01"
+					style="margin-top:57px;margin-left: 215px;">
+					<a href="javascript:void(0)" id="new_submit_btn">保存</a>
+				</div>
+				<div class="fll ml10 btn_css01"
+					style="margin-top: 57px;margin-left: 10px;">
+					<a href="javascript:void(0)" id="new_cancel_btn">关闭</a>
+				</div>
+
+			</div>
+
+		</div>
+
+
+		<!-- 新增模块 -->
+		<div id="dlg_5" class="easyui-dialog"
+			data-options="title:'新增',maximizable:true,minimizable:true,iconCls:'icon-save',resizable:true,modal:true,closed:true"
+			style="width:400px;height:120px;padding:10px 20px" closed="true"
+			buttons="#dlg_2-buttons">
+			<div class="easyui-layout" data-options="fit:true">
+
+
+				新增应用：<input type="text" id="new_module_name"
+					style="width:131px;height: 20px;" class="easyui-validatebox"
+					data-options="required:true" />
+
+			</div>
+			<div id="dlg_2-buttons">
+				<a id="module_save_but" href="javascript:void(0)"
+					class="easyui-linkbutton" iconCls="icon-save"
+					onclick="modulesave()">保存</a> <a id="module_ce_but"
+					href="javascript:void(0)" class="easyui-linkbutton"
+					iconCls="icon-add" onclick="modulecancel()">取消</a>
+			</div>
+		</div>
+
+
+		<!-- 修改模块联系人-->
+		<div id="dlg_3" class="easyui-dialog"
+			style="width:500px;height:270px;padding:10px 20px"
+			data-options="title:'联系人',maximizable:true,minimizable:true,iconCls:'icon-save',resizable:true,modal:true,closed:true"
+			buttons="#dlg_3-buttons">
+
+			<input type="hidden" id="module_hiddenid"> <input
+				type="hidden" id="table_id">
+			<table
+				style="margin-left:25px;border-collapse:separate; border-spacing:20px;">
+				<tr>
+					<td>姓名：<input id="moduleuser_name" type="text"
+						class="easyui-validatebox" data-options="required:true"
+						style="width:131px;height: 20px;" />
+					</td>
+					<td>电话：<input id="moduleuser_phone" type="text"
+						class="easyui-validatebox" data-options="required:true"
+						style="width:131px;height: 20px;" validType="length[11,11]"
+						missingMessage="请输入有效的手机号码" />
+					</td>
+				</tr>
+				<tr>
+					<td>应用：<span id="module_name1"
+						type="width:131px;height: 20px;"></span></td>
+					<td>邮箱：<input id="module_email1" type="text"
+						data-options="required:true" style="width:131px;height: 20px;" />
+					</td>
+				</tr>
+			</table>
+
+			<div id="dlg_3-buttons">
+				<a href="javascript:void(0)" class="easyui-linkbutton"
+					iconCls="icon-ok" onclick="confirm_savebut()">确定</a> <a
+					href="javascript:void(0)" class="easyui-linkbutton"
+					iconCls="icon-cancel"
+					onclick="javascript:$('#dlg_3').dialog('close')">取消</a>
+			</div>
+
+			<!-- 常见问题详情对话框 -->
+			<div id="dlg_comque" class="easyui-dialog"
+				data-options="title:'新增',maximizable:true,minimizable:true,iconCls:'icon-save',resizable:true,modal:true,closed:true"
+				style="width:600px;height:400px;padding:10px 20px" closed="true">
+				<div class="easyui-layout" data-options="fit:true">
+
+					<div class="ftitle" style="height:20px;">
+						<label> 发布者: </label> <span id="d_a"
+							style="font-weight: normal;margin-top:10px;"></span>
+					</div>
+					<div class="ftitle" style="height:20px;">
+						<label>发布时间：</label> <span id="d_b"
+							style="font-weight: normal;margin-top:10px;"></span>
+					</div>
+					<div class="ftitle" style="height:40px;">
+						<label>标题:</label> <span id="d_c"
+							style="font-weight: normal;margin-top:10px;overflow:auto;"></span>
+					</div>
+
+				<div style="padding: 5px 0;margin-bottom: 10px;font-size: 14px;border-bottom: 1px sold #ccc;">
+					<label style="font-weight: bold;font-weight: bold;">内容：</label>
+					<div   class="chque"  id="d_d" style="overflow:auto;height:210px;text-indent:2.5em;"> 
+					
+					</div>
+					
+					
+					</div>
+				</div>
+			</div>	
+
+			<!--新增常见问题对话框 -->
+			<div id="dlg_addcom" class="easyui-dialog"
+				style="width:700px;height:550px;padding:10px 20px;top:1px"
+				data-options="title:'新增',maximizable:true,minimizable:true,iconCls:'icon-save',resizable:true,modal:true,closed:true"
+				buttons="#dlg-buttons1">
+				<div class="ftitle">常见问题</div>
+				<div class="fitem" style="height:25px;">
+					<label>标题：</label> <input id="Title" name="Title"
+						class="easyui-validatebox" required="true"
+						style="width: 178px;height: 18px;" /> <br />
+				</div>
+			<!--<div class="fitem" style="height:25px;">
+					<label>应用</label> <input id="module_selcom" name="Title"
+						class="easyui-validatebox" required="true"
+						style="width: 178px;height: 18px;" />
+				</div>-->
+				<div class="fitem" style="height:25px;">
+					<label>状态</label> <select id="module_com_state"
+						style="width:131px;height: 20px;">
+						<option value="1">启用</option>
+						<option value="0">禁用</option>
+					</select>
+				</div>
+
+
+				<div class="fitem" style="height:120px;margin-top:10px">
+					<label style="height:30px;">内容：</label>
+					<textarea name="Context" id="myEditor">这里写你的初始化内容</textarea>
+					<script type="text/javascript">
+                                   var editor = new UE.ui.Editor();
+                                   editor.render("myEditor");                               
+                                   </script>
+				</div>
+				<div id="hiden_one" style="display:none"></div>
+
+			</div>
+
+			<div id="dlg-buttons1">
+				<a href="javascript:void(0)" class="easyui-linkbutton"
+					iconCls="icon-ok" onclick="add_que()">提交</a>
+			</div>
+			
+			<!-- 修改常见问题对话框 -->
+			<div id="chdlg_addcom" class="easyui-dialog"
+				style="width:700px;height:550px;padding:10px 20px;top:1px"
+				data-options="title:'修改',maximizable:true,minimizable:true,iconCls:'icon-save',resizable:true,modal:true,closed:true"
+				buttons="#dlg-buttonsch">
+				<div class="ftitle">常见问题</div>
+				<div class="fitem" style="height:25px;">
+					<label>标题：</label> <input id="chTitle" name="Title"
+						class="easyui-validatebox" required="true"
+						style="width: 178px;height: 18px;" /> <br />
+				</div>
+			<!--/tydic-bi-portal3.0/WebRoot/pages/sys/suggestions/base.jsp
+			<div class="fitem" style="height:25px;">
+					<label>应用</label> <input id="chmodule_selcom" name="Title"
+						class="easyui-validatebox" required="true"	style="width: 178px;height: 18px;" />			
+			</div>-->
+				<div class="fitem" style="height:25px;">
+					<label>状态</label> <select id="chmodule_com_state"
+						style="width:131px;height: 20px;">
+						<option value="1">启用</option>
+						<option value="0">禁用</option>
+					</select>
+				</div>
+
+
+				<div class="fitem" style="height:120px;margin-top:10px">
+					<label style="height:30px;">内容：</label>
+					<textarea name="Context" id="chmyEditor">这里写你的初始化内容</textarea>
+                                 <script type="text/javascript">
+                                   var editor_1 = new UE.ui.Editor();
+                                   editor_1.render("chmyEditor");                               
+                                   </script>
+				</div>
+				<div id="chhiden_one" style="display:none"></div>
+				<input id="chid" 	style="display:none" />
+
+			</div>
+
+			<div id="dlg-buttonsch">
+				<a href="javascript:void(0)" class="easyui-linkbutton"
+					iconCls="icon-ok" onclick="chadd_que()">提交</a>
+			</div>
+			
+			
+			
+
+
+<!-- <script type="text/javascript">
+			
+			
+			function chadd_que(){
+				$.messager.confirm("确认", "您确定修改该条记录？", function(r){
+				 var img=editor_1.getContent();
+				 var chid=$("#chid").val();
+				 
+				 var date=new Date();
+			// var datemm="";
+			//	 if((parseInt(date.getMonth())+1)<10){
+			//		datemm="0"+(parseInt(date.getMonth())+1).toString();
+				//	} else{
+			//		datemm=(parseInt(date.getMonth())+1).toString();
+				//	}
+			  	// var savedir=date.getFullYear()+"/"+datemm+"/"+date.getDate();
+			  	var savedir=date.getFullYear()+"/"+(parseInt(date.getMonth())+1).toString()+"/"+date.getDate();
+				  var suggestion=$.trim($("#chTitle").val()) ;
+				 if(suggestion==""){
+					 $.messager.alert('我的消息', "标题不能为空！", 'info');
+					 return ;
+				 }
+				 if(suggestion.length>50){
+					 $.messager.alert('我的消息', "标题不能超过50个字！", 'info');
+					 return ; 
+				 }
+				var url3=""; 
+			    var url1="";
+			    if(img!=""){	 
+			   	$("#chhiden_one").html(img);
+			   	//图片处理
+			   	var src="";
+			   	var s="";
+			   	var arry = new Array();	
+			   	$("#chhiden_one img").each(function(i){
+			   		if($(this).attr("src").indexOf("suggestion") <0 ){
+			   			//如果包含子串，则返回大于等于0  如果没有包含，否则返回-1			   			
+			   			arry[i]=$(this).attr("src");
+			   		}   			   		
+			   	})
+			   	console.log($("#chhiden_one img").size());
+			   	$("#chhiden_one img").each(function () {
+			   		
+			   		if($(this).attr("src").indexOf("suggestion") <0 ){
+			   		 src = $(this).attr("src");
+			   		 s=src.substring(26);
+			   		 $(this).attr("src","http://61.188.4.139/upload/suggestion/"+savedir+s);
+			   		} 			           
+			           
+			       // url3=url3+src+",";//s3是当前图片存在的位置	    	  			          
+			       // $(this).attr("src",s);
+			          $(this).attr("width","100%");         
+			      });
+			 
+			   	img=$("#chhiden_one").html();
+			    } 
+				$.ajax({
+					url : "/syssuggestionController/chSuggestionCommon",
+					dataType: "json",
+					traditional:"true",
+					type: "POST", 
+				    contentType: "application/x-www-form-urlencoded; charset=utf-8",
+					data : {
+						"state":$("#chmodule_com_state").find("option:selected").text(),
+					//  "module":$('#chmodule_selcom').combobox('getText'),
+						"img": img,
+						"ID":chid,//问题Id
+						"suggestion":suggestion,
+						"arryurl":arry, //图片上传地址
+				//		"url3":src//当前图片存放的位置
+					},
+					success : function(data) {
+						$.messager.alert('我的消息', "修改成功！", 'info');		
+						getUpData("#tt1");
+					
+					},
+					error : function(data) {
+						$.messager.alert('我的消息', "修改出错！", 'info');
+					}
+				});	
+				});
+			} 	
+			
+
+						
+
+ function add_que(){
+	  var img=editor.getContent();
+	//  var datemm="";
+	  var suggestion=$.trim($("#Title").val()) ;
+	 var date=new Date();
+	//if((parseInt(date.getMonth())+1)<10){
+	//	datemm="0"+(parseInt(date.getMonth())+1).toString();
+	//} else{
+	//	datemm=(parseInt(date.getMonth())+1).toString();
+	//}
+  //	 var savedir=date.getFullYear()+"/"+datemm+"/"+date.getDate();
+  var savedir=date.getFullYear()+"/"+(parseInt(date.getMonth())+1).toString()+"/"+date.getDate();
+	 if(suggestion==""){
+		 $.messager.alert('我的消息', "标题不能为空！", 'info');
+		 return ;
+	 }
+	 if(suggestion.length>50){
+		 $.messager.alert('我的消息', "标题不能超过50个字！", 'info');
+		 return ; 
+	 }
+	var url3=""; 
+    if(img!=""){	 
+   	$("#hiden_one").html(img);
+   	//图片处理
+   	var src="";
+   	var s="";
+   	var arry = new Array();	
+   	$("#hiden_one img").each(function(i){
+   		arry[i]=$(this).attr("src");
+   		
+   	})
+   	$("#hiden_one img").each(function () {
+            src = $(this).attr("src");
+           
+            s=src.substring(26);
+       	   url3=url3+src+",";//s3是当前图片存在的位置   
+          $(this).attr("src","http://61.188.4.139/upload/suggestion/"+savedir+s);
+          // $(this).attr("src",s);
+          $(this).attr("width","100%");         
+      });
+ 
+   	
+   	
+   	img=$("#hiden_one").html();
+    } 
+	$.ajax({
+		url : "/syssuggestionController/addSuggestionCommon",
+		dataType: "json",
+		traditional:"true",
+		type: "POST", 
+	    contentType: "application/x-www-form-urlencoded; charset=utf-8",
+		data : {
+			"state":$("#module_com_state").find("option:selected").text(),
+			//"module":$('#module_selcom').combobox('getText'),
+			"img": img,
+			"suggestion":suggestion,
+			"arryurl":arry//图片上传地址
+			//"url3":src//当前图片存放的位置
+		},
+		success : function(data) {
+			$.messager.alert('我的消息', "添加成功！", 'info');		
+			getUpData("#tt1");
+		
+		},
+		error : function(data) {
+			$.messager.alert('我的消息', "添加出错！", 'info');
+		}
+	});	
+} 
+			
+			
+			
+			
+			
+			
+
+//模块修改弹出框
+function change(id){
+	var id="#"+id;
+  	var row = $(id).datagrid("getSelected");
+  	if (!row){
+  		$.messager.alert('我的消息', "请选择一条记录进行操作！", 'info');
+  		return;
+  	}
+ if(id=="#tt2"){
+	 $("#moduleuser_name").val(row.USERNAME);
+		$("#moduleuser_phone").val(row.PHONE);
+	  	$("#module_name1").html(row.MODULE_NAME);
+	  	$("#module_email1").val(row.EMAIL);
+	  	$("#module_hiddenid").val(row.ID);
+	  	$("#table_id").val("#tt2");  	
+		$("#dlg_3").window("open");
+	 
+ }if(id=="#tt1"){
+	 getcombobox("#chmodule_selcom"); 
+	 $('#chmodule_selcom').combobox('select', row.MODULE_NAME);
+	 $("#chTitle").val(row.SUGGESTION);
+	 var ss= document.getElementById('chmodule_com_state');
+	 if(row.STATE==1){
+		 ss[0].selected = true;//选中 
+	 }
+	 if(row.STATE==0){
+		 ss[1].selected = true;//选中 
+	 }
+	 $("#chid").val(row.ID);
+	 var reply="";
+	 if( typeof(row.REPLY) == "undefined"){
+		 reply="  ";
+	 }else{
+		 reply=row.REPLY;
+	 }
+	 $("#chmyEditor").val(reply);
+	  editor_1.setContent(reply);
+
+	  $('#chdlg_addcom').dialog(
+				  {
+					  onOpen:function(){
+						  $(".window-mask").css("z-index","800");
+						  $(".panel").css("z-index","900");
+						  $(".window-shadow").css("z-index","899");
+					  }, 
+				      onMove:function(left,top){ 
+				    	  $(".window-mask").css("z-index","800");
+						  $(".panel").css("z-index","900");
+						  $(".window-shadow").css("z-index","899");
+				      },
+				      onResize:function(width,height){
+				    	  $(".window-mask").css("z-index","800");
+						  $(".panel").css("z-index","900");
+						  $(".window-shadow").css("z-index","899");
+				      }
+				  });
+			
+		  $('#chdlg_addcom').dialog('open').dialog('setTitle','修改问题');
+	  
+	  
+	  
+	  
+	  
+	// $("#chdlg_addcom").window("open");
+	 
+ }
+	
+
+}
+
+function confirm_savebut(){	
+	var USERNAME=$("#moduleuser_name").val();
+  	if (!USERNAME){
+		$.messager.alert('我的消息', "请填写姓名！", 'info');
+		return;
+	}
+  	var PHONE=$("#moduleuser_phone").val();
+	if (!PHONE){
+		$.messager.alert('我的消息', "请输入有效的手机号码！", 'info');
+		return;
+	}
+	
+  	var module_email=$("#module_email1").val();
+  	var module_hiiddenid=$("#module_hiddenid").val();
+  	var tableid=$("#table_id").val();
+  	$.ajax({
+		url : "/syssuggestionController/ChModuleuser",
+		dataType: "json",  
+		type: "POST", 
+	    contentType: "application/x-www-form-urlencoded; charset=utf-8",
+		data : {
+			"USERNAME":USERNAME,
+			"PHONE":PHONE,
+			"module_email":module_email,
+			"module_hiiddenid":module_hiiddenid
+		},
+		success : function(data) {
+			$.messager.alert('我的消息', "修改成功！", 'info');
+			getUpData(tableid);
+		
+		},
+		error : function(data) {
+			$.messager.alert('我的消息', "修改出错！", 'info');
+		}
+  		
+  		
+  		
+  	})
+  	
+	
+}
+
+
+
+function modulesave(){
+	var module_name=$("#new_module_name").val();
+	var id="#tt2";
+	if (!module_name){
+		$.messager.alert('我的消息', "填写应用名再保存！", 'info');
+		return;
+	}
+	
+	$.ajax({
+		url : "/syssuggestionController/addmodule",
+								dataType : "json",
+								type : "POST",
+								contentType : "application/x-www-form-urlencoded; charset=utf-8",
+								data : {
+									"module_name" : module_name
+								},
+								success : function(data) {
+									$.messager.alert('我的消息', "添加成功！", 'info');
+									getUpData(id);
+
+								},
+								error : function(data) {
+									$.messager.alert('我的消息', "添加出错！", 'info');
+								}
+							});
+
+				}
+
+function modulecancel() {
+					$("#dlg_5").window("close");
+				}
+
+				//新增联系人
+
+$("#new_submit_btn").bind("click",function() {
+
+									var module_username = $("#module_username")
+											.val();
+									if (!module_username) {
+										$.messager.alert('我的消息', "请填写姓名！",
+												'info');
+										return;
+									}
+
+									var module_phone = $("#module_phone").val();
+									if (!module_phone) {
+										$.messager.alert('我的消息', "请填写手机号码！",
+												'info');
+										return;
+									}
+
+									var module_email = $("#module_email").val();
+
+									var module_selN = $('#module_selN')
+											.combobox('getText');
+									if (!module_selN) {
+										return;
+									}
+									var module_user_state = $(
+											"#module_user_state").val();
+									if (!module_user_state) {
+										$.messager.alert('我的消息', "请选择用户状态！",
+												'info');
+										return;
+									}
+									$.ajax({
+										url :"/syssuggestionController/moduleuser",
+												dataType : "json",
+												type : "POST",
+												contentType : "application/x-www-form-urlencoded; charset=utf-8",
+												data : {
+													"module_username" : module_username,
+													"module_selN" : module_selN,
+													"module_phone" : module_phone,
+													"module_email" : module_email,
+													"module_user_state" : module_user_state
+												},
+												success : function(data) {
+													$.messager.alert('我的消息',
+															"添加成功！", 'info');
+													getUpData("#tt2");
+
+												},
+												error : function(data) {
+													$.messager.alert('我的消息',
+															"添加出错！", 'info');
+												}
+											});
+
+								});
+				$("#new_cancel_btn").bind("click", function() {
+					$("#dlg_4").window("close");
+				});
+			</script>
+-->
+		</div>
+</body>
+</html>

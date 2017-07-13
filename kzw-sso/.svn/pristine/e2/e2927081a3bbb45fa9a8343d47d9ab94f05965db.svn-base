@@ -1,0 +1,101 @@
+package com.kzw.sso.service.impl;
+
+import java.util.List;
+import java.util.UUID;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.util.DigestUtils;
+
+import com.kzw.common.pojo.KZWResult;
+import com.kzw.common.util.CookieUtils;
+import com.kzw.common.util.JsonUtils;
+import com.kzw.mapper.TbUserMapper;
+import com.kzw.pojo.TbUser;
+import com.kzw.pojo.TbUserExample;
+import com.kzw.pojo.TbUserExample.Criteria;
+import com.kzw.sso.component.JedisClient;
+import com.kzw.sso.service.LoginService;
+
+@Service("loginService")
+public class LoginServiceImpl implements LoginService {
+
+	@Resource
+	private TbUserMapper userMapper;
+	@Resource
+	private JedisClient jedisClient;
+	
+	@Value("${REDIS_SESSION_KEY}")
+	private String REDIS_SESSION_KEY;
+	@Value("${SESSION_EXPIRE}")
+	private Integer SESSION_EXPIRE;
+	
+	
+	@Override
+	public KZWResult login(String userName, String password,
+			HttpServletRequest request, HttpServletResponse response) {
+		
+		TbUserExample example = new TbUserExample();
+		Criteria criteria = example.createCriteria();
+		criteria.andUsernameEqualTo(userName);
+		
+		List<TbUser> list = userMapper.selectByExample(example);
+		if(list == null || list.isEmpty()) {
+			return KZWResult.build(400, "用户名或密码错误");
+		}
+		TbUser user = list.get(0);
+		if(!user.getPassword().equals(DigestUtils.md5DigestAsHex(password.getBytes()))) {
+			return KZWResult.build(400, "用户名或密码错误");
+		}
+		
+		String token = UUID.randomUUID().toString();
+		user.setPassword(null);
+		jedisClient.set(REDIS_SESSION_KEY + ":" + token, JsonUtils.objectToJson(user));
+		jedisClient.expire(REDIS_SESSION_KEY + ":" + token, SESSION_EXPIRE);
+		// 写cookie
+		CookieUtils.setCookie(request, response, "KZW_TOKEN", token);
+		
+		return KZWResult.ok(token);
+	}
+
+
+	@Override
+	public KZWResult getUserByToken(String token) {
+		
+		String json = jedisClient.get(REDIS_SESSION_KEY + ":" + token);
+		if(StringUtils.isBlank(json)) {
+			return KZWResult.build(400, "用户session已过期,请重新登录");
+		}
+		TbUser user = JsonUtils.jsonToPojo(json, TbUser.class);
+
+		jedisClient.expire(REDIS_SESSION_KEY + ":" + token, SESSION_EXPIRE);
+		
+		return KZWResult.ok(user);
+	}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

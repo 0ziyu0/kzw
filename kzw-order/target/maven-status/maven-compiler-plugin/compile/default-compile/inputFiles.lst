@@ -1,0 +1,12 @@
+C:\Users\子煜\Desktop\全部\kzw-order\src\main\java\com\kzw\order\controller\OrderController.java
+C:\Users\子煜\Desktop\全部\kzw-order\src\main\java\com\kzw\order\service\impl\OrderServiceImpl.java
+C:\Users\子煜\Desktop\全部\kzw-order\src\main\java\com\kzw\order\component\impl\JedisClientSingle.java
+C:\Users\子煜\Desktop\全部\kzw-order\src\main\java\com\kzw\order\service\impl\OrderStoreServiceImpl.java
+C:\Users\子煜\Desktop\全部\kzw-order\src\main\java\com\kzw\order\service\OrderStoreService.java
+C:\Users\子煜\Desktop\全部\kzw-order\src\main\java\com\kzw\order\component\JedisClient.java
+C:\Users\子煜\Desktop\全部\kzw-order\src\main\java\com\kzw\order\pojo\OrderInfo.java
+C:\Users\子煜\Desktop\全部\kzw-order\src\main\java\com\kzw\order\service\UserService.java
+C:\Users\子煜\Desktop\全部\kzw-order\src\main\java\com\kzw\order\service\impl\UserServiceImpl.java
+C:\Users\子煜\Desktop\全部\kzw-order\src\main\java\com\kzw\order\service\OrderService.java
+C:\Users\子煜\Desktop\全部\kzw-order\src\main\java\com\kzw\order\component\impl\JedisClientCluster.java
+C:\Users\子煜\Desktop\全部\kzw-order\src\main\java\com\kzw\order\util\MailUtils.java

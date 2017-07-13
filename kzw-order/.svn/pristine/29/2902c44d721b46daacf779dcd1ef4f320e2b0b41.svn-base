@@ -1,0 +1,144 @@
+package com.kzw.order.controller;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.kzw.common.pojo.KZWResult;
+import com.kzw.common.util.ExceptionUtil;
+import com.kzw.order.pojo.OrderInfo;
+import com.kzw.order.service.OrderService;
+import com.kzw.order.util.MailUtils;
+import com.kzw.pojo.TbOrderItem;
+import com.kzw.pojo.TbUser;
+
+@Controller
+public class OrderController {
+
+	@Resource
+	private OrderService orderService;
+	
+	@RequestMapping(value = "/order/create", method = RequestMethod.POST)
+	@ResponseBody
+	public KZWResult createOrder(@RequestBody OrderInfo orderInfo) {
+		
+		try {
+			List<OrderInfo> orderInfoList = new ArrayList<>();
+			List<String> orderIdList = new ArrayList<>();
+			List<Long> storeList = new ArrayList<>(); // 保存当前所有的店铺(即最终生成的订单数量)
+			boolean falge = true;
+			int i = 0;
+			Long titlePrice = 0L;
+			for (TbOrderItem orderItem : orderInfo.getOrderItems()) {
+				for (Long storeId : storeList) {
+					if(storeId.equals(orderItem.getStoreId())) {
+						falge = false;
+					}
+				}
+				if(falge) { // 没有匹配到
+					storeList.add(orderItem.getStoreId());
+				}
+				falge = true;
+			}
+			// 分店铺不同生成不同的订单
+			for (Long sid : storeList) {
+				List<TbOrderItem> orderItemList = new ArrayList<>();
+				OrderInfo info = new OrderInfo();
+				info = copyBeanProperty(orderInfo, info);
+				for (TbOrderItem tbOrderItem : orderInfo.getOrderItems()) {
+					if(tbOrderItem.getStoreId().equals(sid)) {
+						orderItemList.add(tbOrderItem);
+						titlePrice += tbOrderItem.getTotalFee();
+					}
+				}
+				info.setOrderItems(orderItemList);
+				info.setOrderShipping(orderInfo.getOrderShipping());
+				info.setPayment(titlePrice.toString());
+				orderInfoList.add(info);
+				titlePrice = 0L;
+			}
+			// 分批次添加订单
+			for (OrderInfo oInfo : orderInfoList) {
+				// 设置总数
+				String orderId = orderService.createOrder(oInfo);
+				orderIdList.add(orderId);
+				// 发送邮件
+				try {
+					Long store = storeList.get(i);
+					// 通过店铺ID查询店铺注册人的邮件
+					List<TbUser> userList = orderService.getStoreUser(store);
+					if(userList != null && userList.size() > 0) {
+						MailUtils.setEmailMessage(userList.get(0).getEmail(), orderId);
+					}
+					i++;
+				} catch (Exception e) {
+					// 要保证处理正常的逻辑
+					e.printStackTrace();
+				}
+			}
+			
+			return KZWResult.ok(orderIdList);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return KZWResult.build(500, ExceptionUtil.getStackTrace(e));
+		}
+	}
+	
+	/**
+	 * 拷贝继承的属性
+	 * @param from
+	 * @param to
+	 * @return
+	 */
+	private OrderInfo copyBeanProperty(OrderInfo from, OrderInfo to) {
+		to.setPayment(from.getPayment());
+		to.setUserId(from.getUserId());
+		to.setPaymentType(from.getPaymentType());
+		to.setStatus(from.getStatus());
+		to.setBuyerNick(from.getBuyerNick());
+		
+		return to;
+	}
+	
+	@RequestMapping("/test")
+	@ResponseBody
+	public KZWResult test(OrderInfo orderInfo) {
+		
+		
+		
+		
+		return KZWResult.ok("成功");
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kzw.mapper.TbStrategyMapper" >
+  <resultMap id="BaseResultMap" type="com.kzw.pojo.TbStrategy" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="store_id" property="storeId" jdbcType="BIGINT" />
+    <result column="way" property="way" jdbcType="VARCHAR" />
+    <result column="area" property="area" jdbcType="VARCHAR" />
+    <result column="sex" property="sex" jdbcType="VARCHAR" />
+    <result column="dong" property="dong" jdbcType="VARCHAR" />
+    <result column="floor" property="floor" jdbcType="VARCHAR" />
+    <result column="other" property="other" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, store_id, way, area, sex, dong, floor, other
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from tb_strategy
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from tb_strategy
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.kzw.pojo.TbStrategy" >
+    insert into tb_strategy (id, store_id, way, 
+      area, sex, dong, floor, 
+      other)
+    values (#{id,jdbcType=INTEGER}, #{storeId,jdbcType=BIGINT}, #{way,jdbcType=VARCHAR}, 
+      #{area,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR}, #{dong,jdbcType=VARCHAR}, #{floor,jdbcType=VARCHAR}, 
+      #{other,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.kzw.pojo.TbStrategy" >
+    insert into tb_strategy
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="storeId != null" >
+        store_id,
+      </if>
+      <if test="way != null" >
+        way,
+      </if>
+      <if test="area != null" >
+        area,
+      </if>
+      <if test="sex != null" >
+        sex,
+      </if>
+      <if test="dong != null" >
+        dong,
+      </if>
+      <if test="floor != null" >
+        floor,
+      </if>
+      <if test="other != null" >
+        other,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="storeId != null" >
+        #{storeId,jdbcType=BIGINT},
+      </if>
+      <if test="way != null" >
+        #{way,jdbcType=VARCHAR},
+      </if>
+      <if test="area != null" >
+        #{area,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null" >
+        #{sex,jdbcType=VARCHAR},
+      </if>
+      <if test="dong != null" >
+        #{dong,jdbcType=VARCHAR},
+      </if>
+      <if test="floor != null" >
+        #{floor,jdbcType=VARCHAR},
+      </if>
+      <if test="other != null" >
+        #{other,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.kzw.pojo.TbStrategy" >
+    update tb_strategy
+    <set >
+      <if test="storeId != null" >
+        store_id = #{storeId,jdbcType=BIGINT},
+      </if>
+      <if test="way != null" >
+        way = #{way,jdbcType=VARCHAR},
+      </if>
+      <if test="area != null" >
+        area = #{area,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null" >
+        sex = #{sex,jdbcType=VARCHAR},
+      </if>
+      <if test="dong != null" >
+        dong = #{dong,jdbcType=VARCHAR},
+      </if>
+      <if test="floor != null" >
+        floor = #{floor,jdbcType=VARCHAR},
+      </if>
+      <if test="other != null" >
+        other = #{other,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.kzw.pojo.TbStrategy" >
+    update tb_strategy
+    set store_id = #{storeId,jdbcType=BIGINT},
+      way = #{way,jdbcType=VARCHAR},
+      area = #{area,jdbcType=VARCHAR},
+      sex = #{sex,jdbcType=VARCHAR},
+      dong = #{dong,jdbcType=VARCHAR},
+      floor = #{floor,jdbcType=VARCHAR},
+      other = #{other,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <select id="findStrategyList" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select *from tb_strategy
+    	where store_id = #{storeId,jdbcType=BIGINT}
+  </select> 
+  
+  <select id="selectTimeBySid" resultType="com.kzw.pojo.TbTimes" parameterType="int" >
+    select *from tb_times
+    	where strategy_id = #{strategyId}
+  </select> 
+  
+  <select id="selectByStrategy" resultMap="BaseResultMap" parameterType="com.kzw.pojo.TbStrategy" >
+    select *from tb_strategy
+    	<where>
+	  		<if test="id != null">
+	  			and id = #{strategy.id}
+	  		</if>
+	  		<if test="storeId != null">
+	  			and store_id = #{storeId}
+	  		</if>
+	  		<if test="way != null and war != ''">
+	  			and way = #{way}
+	  		</if>
+	  		<if test="area != null and area != ''">
+	  			and area = #{area}
+	  		</if>
+	  		<if test="sex != null and sex != ''">
+	  			and sex = #{sex}
+	  		</if>
+	  		<if test="dong !=null and dong != ''">
+	  			and dong = #{dong}
+	  		</if>
+	  		<if test="floor != null and floor != ''">
+	  			and floor = #{floor}
+	  		</if>
+	  		<if test="other != null and other != ''">
+	  			and other = #{other}
+	  		</if>
+    	</where>
+  </select> 
+</mapper>

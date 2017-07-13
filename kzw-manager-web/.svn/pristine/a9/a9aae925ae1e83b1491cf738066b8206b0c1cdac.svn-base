@@ -1,0 +1,389 @@
+package com.kzw.controller;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.kzw.common.pojo.EasyUIDataGridResult;
+import com.kzw.common.pojo.KZWResult;
+import com.kzw.common.util.DataUtil;
+import com.kzw.common.util.PageData;
+import com.kzw.common.util.PageDataGenerator;
+import com.kzw.common.util.RedisUtil;
+import com.kzw.pojo.StoreOrder;
+import com.kzw.pojo.TbPartner;
+import com.kzw.pojo.TbStore;
+import com.kzw.pojo.TbStrategy;
+import com.kzw.pojo.TbTimes;
+import com.kzw.pojo.TbUser;
+import com.kzw.service.PartnerService;
+import com.kzw.service.StoreOrderService;
+import com.kzw.service.StoreService;
+import com.kzw.service.StrategyService;
+import com.kzw.service.UserService;
+import com.kzw.vo.CustomShowStoreInf;
+import com.kzw.vo.PartnerPo;
+import com.kzw.vo.StoreStrategyVo;
+import com.kzw.vo.StrategyVo;
+
+/**
+ * 店铺与策略管理
+ * @author 子煜
+ *
+ */
+@Controller
+@RequestMapping("/store")
+public class StoreController {
+	
+	@Resource
+	private PartnerService partnerService;
+	@Resource
+	private StrategyService strategyService;
+	@Resource
+	private StoreService storeService;
+	@Resource
+	private UserService userServices;
+	@Resource
+	private StoreOrderService storeOrderService;
+	
+	/**
+	 * 展示店铺策略
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/strategyList")
+	public String strategyList(HttpServletRequest request, Model model) {
+		// 获取店铺id
+		String userJson = RedisUtil.getUser(request);
+		KZWResult format = KZWResult.format(userJson);
+		if(format.getStatus() != 200) {
+			return null;
+		}
+		// 取用户信息
+		format = KZWResult.formatToPojo(userJson, TbUser.class);
+		TbUser user = (TbUser) format.getData();
+		// 在合伙人中取出店铺id
+		List<TbPartner> partnerList = partnerService.selectByUserId(user.getId());
+		StoreStrategyVo storeStrategyVo = new StoreStrategyVo();
+		List<StrategyVo> strategyVoLists = new ArrayList<StrategyVo>();
+		// 根据商铺id查询策略
+		Long storeId = partnerList.get(0).getStoreId();
+		List<TbStrategy> strategyLists = strategyService.findStrategyList(storeId);
+		// 根据每个策略来查询对应策略的时间
+		for (TbStrategy strategy : strategyLists) {
+			List<TbTimes> timesList = strategyService.selectTimeBySid(strategy.getId());
+			StrategyVo strategyVo = new StrategyVo();
+			strategyVo.setStrategy(strategy);
+			strategyVo.setTimesList(timesList);
+			strategyVoLists.add(strategyVo);
+		}
+		storeStrategyVo.setStrategyVoLists(strategyVoLists);
+		model.addAttribute("list", storeStrategyVo);
+		model.addAttribute("storeId", storeId);
+		
+		return "strategy";
+	}
+	
+	/**
+	 * 修改店铺策略
+	 * @param strategyVo
+	 * @param request
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/updateStrategy")
+	@ResponseBody
+	public KZWResult updateStrategy(StrategyVo strategyVo, HttpServletRequest request, Model model) {
+		
+		TbStrategy strategy = new TbStrategy();
+		Integer strategyId = null;
+		strategy.setStoreId(strategyVo.getStrategy().getStoreId());
+		strategy.setOther(strategyVo.getStrategy().getOther()); // 星期
+		List<TbStrategy> selectList = strategyService.selectByStrategy(strategy);
+		strategyId = selectList.get(0).getId();
+		strategyVo.getStrategy().setId(strategyId);
+		
+		for(int i = 0; i < strategyVo.getTimesList().size(); i++){
+			if(strategyVo.getTimesList().get(i).getBeginTime() != null){
+				strategyVo.getTimesList().get(i).setEndTime(strategyVo.getTimesList().get(i).getBeginTime() + 1);
+				strategyVo.getTimesList().get(i).setStrategyId(strategyId);
+			}
+		}
+		strategyService.updateStrategyVo(strategyVo);
+		
+		return KZWResult.ok();
+	}
+	
+	/**
+	 * 展示店铺及合伙人信息
+	 * @param request
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/storeReInfo")
+	public String storeReInfo(HttpServletRequest request, Model model) {
+		String userJson = RedisUtil.getUser(request);
+		KZWResult format = KZWResult.format(userJson);
+		if(format.getStatus() != 200) {
+			return null;
+		}
+		// 取用户信息
+		format = KZWResult.formatToPojo(userJson, TbUser.class);
+		TbUser user = (TbUser) format.getData();
+		// 用户向店铺信息传递数据 -> 主要用于数据回显
+		CustomShowStoreInf customShowStoreInf = new CustomShowStoreInf();
+		List<PartnerPo> partnerPoList = new ArrayList<>();
+		// 根据当前用户的id查询店铺
+		TbStore store = storeService.selectByuserId(user.getId());
+		if(store == null) {
+			customShowStoreInf.setLimits(null);
+		} else {
+			customShowStoreInf.setLimits("店主");
+		}
+		// 数据回显1    -> 有关店铺信息的数据
+		List<TbPartner> partner = partnerService.selectByUserId(user.getId());
+		TbStore storeInf = storeService.selectByid(partner.get(0).getStoreId());
+		// 数据回显2    -> 有关合伙人信息的数据
+		List<TbPartner> partnerLists = partnerService.selectByStoreId(partner.get(0).getStoreId());
+		// 数据回显3    -> 保存合伙人的名字，电话，等其他有关的信息
+		for (TbPartner tbPartner : partnerLists) {
+			PartnerPo po = new PartnerPo();
+			com.kzw.pojo.TbUser paratnerUser = userServices.selectById(tbPartner.getUserId());
+			po.setPartner(tbPartner);
+			po.setUser(paratnerUser);
+			if(storeInf.getUserId().equals(tbPartner.getUserId())) {
+				po.setStatus("店主");
+			} else {
+				po.setStatus("合伙人");
+			}
+			partnerPoList.add(po);
+		}
+		// 数据回显4    -> 查询店主有关的信息
+		com.kzw.pojo.TbUser masterUser = userServices.selectById(storeInf.getUserId());
+		customShowStoreInf.setUser(masterUser);
+		customShowStoreInf.setPartnerLists(partnerPoList);
+		customShowStoreInf.setStoreInf(storeInf);
+		
+		model.addAttribute("customShowStoreInf", customShowStoreInf);
+		return "storeReInfo";
+	}
+	
+	/**
+	 * 修改店铺信息
+	 * @param store
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/updateStore")
+	@ResponseBody
+	public KZWResult updateStore(TbStore store, HttpServletRequest request ) {
+		
+		try {
+			storeService.update(store);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return KZWResult.build(400, "暂时不能更新,请稍后...");
+		}
+		
+		return KZWResult.ok("数据已更新...");
+	}
+	
+	/**
+	 * 校验合伙人
+	 * @param phone
+	 * @return
+	 */
+	@RequestMapping("/checkPartner/{phone}")
+	@ResponseBody
+	public KZWResult checkPartner(@PathVariable String phone) {
+		
+		try {
+			com.kzw.pojo.TbUser user = new com.kzw.pojo.TbUser();
+			user.setPhone(phone);
+			user = userServices.selectByUser(user);
+			if(user == null) {
+				return KZWResult.build(400, "该用户不存在...");
+			}
+			// 查询是否已经加入了合伙人
+			List<TbPartner> partner = partnerService.selectByUserId(user.getId());
+			if(partner.size() > 0) {
+				return KZWResult.build(400, "该用户已经是合伙人了...");
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return KZWResult.build(400, "暂时不能更新,请稍后...");
+		}
+		return KZWResult.ok();
+	}
+	
+	/**
+	 * 添加合伙人
+	 * @param store
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/addPartner")
+	@ResponseBody
+	public KZWResult addPartner(TbPartner partner, String phone, HttpServletRequest request ) {
+		
+		try {
+			com.kzw.pojo.TbUser user = new com.kzw.pojo.TbUser();
+			user.setPhone(phone);
+			user = userServices.selectByUser(user);
+			partner.setUserId(user.getId());
+			partnerService.save(partner);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return KZWResult.build(400, "暂时不能更新,请稍后...");
+		}
+		
+		return KZWResult.ok("添加成功...");
+	}
+	
+	/**
+	 * 删除合伙人
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping("/deletePartner")
+	@ResponseBody
+	public KZWResult deletePartner(Long id) {
+		
+		try {
+			partnerService.delete(id);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return KZWResult.build(400, "暂时不能更新,请稍后...");
+		}
+		
+		return KZWResult.ok("删除成功...");
+	}
+	
+	/**
+	 * 订单列表
+	 * @return
+	 */
+	@RequestMapping("/order")
+	@ResponseBody
+	public EasyUIDataGridResult order(HttpServletRequest request) {
+		PageData pageDate = PageDataGenerator.newInstall(request, StoreOrder.class, true);
+		
+		String userJson = RedisUtil.getUser(request);
+		KZWResult format = KZWResult.format(userJson);
+		if(format.getStatus() != 200) {
+			return null;
+		}
+		// 取用户信息
+		format = KZWResult.formatToPojo(userJson, TbUser.class);
+		TbUser user = (TbUser) format.getData();
+		List<TbPartner> partnerList = partnerService.selectByUserId(user.getId());
+		pageDate.getParams().put("storeId", partnerList.get(0).getStoreId());
+		pageDate.getParams().put("orderStatus", "orderStatus");
+		PageData p = storeOrderService.selectPage(pageDate);
+		
+		EasyUIDataGridResult result = new EasyUIDataGridResult();
+		result.setTotal(p.getTotal());
+		result.setRows(p.getResult());
+		
+		return result;
+	}
+	
+	/**
+	 * 发货
+	 * @param ids
+	 * @return
+	 */
+	@RequestMapping(value="/delivery")  
+	@ResponseBody
+	public KZWResult delivery(String [] ids) {
+		List<String> itemIds = new ArrayList<>();
+		for (String id : ids) {
+			itemIds.add(id);
+		}
+		storeOrderService.delivery(itemIds);
+		return KZWResult.ok();
+	}
+	
+	@RequestMapping("/historyOrder")
+	@ResponseBody
+	public EasyUIDataGridResult historyOrder(HttpServletRequest request,String createtimeStr, String updatetimeStr,
+			String order_id, String title, String phone) {
+		PageData pageDate = PageDataGenerator.newInstall(request, StoreOrder.class, true);
+		
+		String userJson = RedisUtil.getUser(request);
+		KZWResult format = KZWResult.format(userJson);
+		if(format.getStatus() != 200) {
+			return null;
+		}
+		// 取用户信息
+		format = KZWResult.formatToPojo(userJson, TbUser.class);
+		TbUser user = (TbUser) format.getData();
+		List<TbPartner> partnerList = partnerService.selectByUserId(user.getId());
+		pageDate.getParams().put("storeId", partnerList.get(0).getStoreId());
+		
+		if(StringUtils.isNotBlank(createtimeStr)) {
+			pageDate.getParams().put("createtime", DataUtil.getDateByString(createtimeStr));
+		}
+		if(StringUtils.isNotBlank(updatetimeStr)) {
+			pageDate.getParams().put("updatetime", DataUtil.getDateByString(updatetimeStr));
+		}
+		if(StringUtils.isNotBlank(title)) {
+			pageDate.getParams().put("title", title);
+		}
+		if(StringUtils.isNotBlank(phone)) {
+			pageDate.getParams().put("phone", phone);
+		}
+		if(StringUtils.isNotBlank(order_id)) {
+			pageDate.getParams().put("order_id", order_id);
+		}
+		PageData p = storeOrderService.selectPage(pageDate);
+		
+		EasyUIDataGridResult result = new EasyUIDataGridResult();
+		result.setTotal(p.getTotal());
+		result.setRows(p.getResult());
+		
+		return result;
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

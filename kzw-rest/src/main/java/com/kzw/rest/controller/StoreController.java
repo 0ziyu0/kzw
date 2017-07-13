@@ -1,0 +1,72 @@
+package com.kzw.rest.controller;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.kzw.common.pojo.KZWResult;
+import com.kzw.common.util.ExceptionUtil;
+import com.kzw.pojo.TbPartner;
+import com.kzw.pojo.TbStore;
+import com.kzw.rest.service.StoreService;
+
+@Controller
+@RequestMapping("/store")
+public class StoreController {
+
+	@Resource
+	private StoreService storeService;
+	
+	/**
+	 * 得到合伙人
+	 * @param userId
+	 * @return
+	 */
+	@RequestMapping("/partner/{userId}")
+	@ResponseBody
+	public KZWResult getPartnerByUserId(@PathVariable Long userId) {
+		
+		try {
+			TbPartner partner = storeService.selectPartnerByUserId(userId);
+			if(partner != null) {
+				return KZWResult.ok(partner);
+			}
+			return KZWResult.build(400, "该用户不存在...");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return KZWResult.build(500, ExceptionUtil.getStackTrace(e));
+		}
+	}
+	
+	/**
+	 * 保存店铺
+	 * @param userId
+	 * @return
+	 */
+	@RequestMapping("/register")
+	@ResponseBody
+	public KZWResult saveRegister(TbStore store) {
+		
+		return storeService.insertStore(store);
+	}
+	
+	/**
+	 * 得到店铺名称
+	 * @param userId
+	 * @return
+	 */
+	@RequestMapping("/storeName/{itemId}")
+	@ResponseBody
+	public KZWResult getStoreName(@PathVariable Long itemId) {
+		
+		try {
+			return storeService.selectByStoreNameByItemId(itemId);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return KZWResult.build(500, ExceptionUtil.getStackTrace(e));
+		}
+	}
+}

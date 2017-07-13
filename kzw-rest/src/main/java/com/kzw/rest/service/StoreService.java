@@ -1,0 +1,29 @@
+package com.kzw.rest.service;
+
+import com.kzw.common.pojo.KZWResult;
+import com.kzw.pojo.TbPartner;
+import com.kzw.pojo.TbStore;
+
+public interface StoreService {
+
+	/**
+	 * 通过用户id查询合伙人
+	 * @param userId
+	 * @return
+	 */
+	TbPartner selectPartnerByUserId(Long userId);
+	
+	/**
+	 * 保存店铺
+	 * @param store
+	 * @return
+	 */
+	KZWResult insertStore(TbStore store);
+	
+	/**
+	 * 通过商品id查询店铺名称
+	 * @param itemId
+	 * @return
+	 */
+	KZWResult selectByStoreNameByItemId(Long itemId);
+}

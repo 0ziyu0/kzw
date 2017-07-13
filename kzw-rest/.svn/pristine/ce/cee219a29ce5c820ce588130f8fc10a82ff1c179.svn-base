@@ -1,0 +1,164 @@
+package com.kzw.rest.service.impl;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import com.kzw.common.util.JsonUtils;
+import com.kzw.mapper.TbItemDescMapper;
+import com.kzw.mapper.TbItemMapper;
+import com.kzw.mapper.TbItemParamItemMapper;
+import com.kzw.pojo.TbItem;
+import com.kzw.pojo.TbItemDesc;
+import com.kzw.pojo.TbItemParamItem;
+import com.kzw.pojo.TbItemParamItemExample;
+import com.kzw.pojo.TbItemParamItemExample.Criteria;
+import com.kzw.rest.component.JedisClient;
+import com.kzw.rest.service.ItemService;
+
+@Service("itemService")
+public class ItemServiceImpl implements ItemService {
+	
+	@Resource
+	private TbItemMapper itemMapper;
+	@Resource
+	private TbItemDescMapper itemDescMapper;
+	@Resource
+	private TbItemParamItemMapper itemParamItemMapper;
+	
+	@Resource
+	private JedisClient jedisClient;
+	
+	@Value("${REDIS_ITEM_KEY}")
+	private String REDIS_ITEM_KEY;
+	@Value("${ITEM_BASE_INFO_KEY}")
+	private String ITEM_BASE_INFO_KEY;
+	@Value("${ITEM_EXPIRE_SECOND}")
+	private Integer ITEM_EXPIRE_SECOND;
+	
+	@Value("${ITEM_DESC_KEY}")
+	private String ITEM_DESC_KEY;
+	@Value("${ITEM_PARAM_KEY}")
+	private String ITEM_PARAM_KEY;
+
+	@Override
+	public TbItem getItemById(Long itemId) {
+		
+		try {
+			String json = jedisClient.get(REDIS_ITEM_KEY + ":" + ITEM_BASE_INFO_KEY + ":" + itemId);
+			if(StringUtils.isNoneBlank(json)) {
+				TbItem item = JsonUtils.jsonToPojo(json, TbItem.class);
+				return item;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		TbItem item = itemMapper.selectByPrimaryKey(itemId);
+		
+		try {
+			jedisClient.set(REDIS_ITEM_KEY + ":" + ITEM_BASE_INFO_KEY + ":" + itemId, JsonUtils.objectToJson(item));
+			jedisClient.expire(REDIS_ITEM_KEY + ":" + ITEM_BASE_INFO_KEY + ":" + itemId, ITEM_EXPIRE_SECOND);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return item;
+	}
+
+	@Override
+	public TbItemDesc getItemDescById(Long itemId) {
+		
+		TbItemDesc itemDesc = null;
+		try {
+			String json = jedisClient.get(REDIS_ITEM_KEY + ":" + itemId + ":" + ITEM_DESC_KEY);
+			if(StringUtils.isNotBlank(json)) {
+				itemDesc = JsonUtils.jsonToPojo(json, TbItemDesc.class);
+				return itemDesc;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		itemDesc = itemDescMapper.selectByPrimaryKey(itemId);
+		
+		try {
+			jedisClient.set(REDIS_ITEM_KEY + ":" + itemId + ":" + ITEM_DESC_KEY, JsonUtils.objectToJson(itemDesc));
+			jedisClient.expire(REDIS_ITEM_KEY + ":" + itemId + ":" + ITEM_DESC_KEY, ITEM_EXPIRE_SECOND);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return itemDesc;
+	}
+
+	@Override
+	public TbItemParamItem getItemParamItemById(Long itemId) {
+		
+		TbItemParamItem itemParamItem = null;
+		try {
+			String json = jedisClient.get(REDIS_ITEM_KEY + ":" + itemId + ":" + ITEM_PARAM_KEY);
+			if(StringUtils.isNotBlank(json)) {
+				itemParamItem = JsonUtils.jsonToPojo(json, TbItemParamItem.class);
+				return itemParamItem;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		TbItemParamItemExample example = new TbItemParamItemExample();
+		Criteria criteria = example.createCriteria();
+		criteria.andItemIdEqualTo(itemId);
+		
+		List<TbItemParamItem> list = itemParamItemMapper.selectByExampleWithBLOBs(example);
+		// 取规格参数
+		if(list != null && list.size() > 0) {
+			itemParamItem = list.get(0);
+			try {
+				jedisClient.set(REDIS_ITEM_KEY + ":" + itemId + ":" + ITEM_PARAM_KEY, JsonUtils.objectToJson(itemParamItem));
+				jedisClient.expire(REDIS_ITEM_KEY + ":" + itemId + ":" + ITEM_PARAM_KEY, ITEM_EXPIRE_SECOND);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return itemParamItem;
+	}
+
+
+	
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

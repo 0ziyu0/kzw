@@ -1,0 +1,30 @@
+package com.kzw.service;
+
+import com.kzw.common.base.service.BaseService;
+import com.kzw.common.pojo.KZWResult;
+import com.kzw.pojo.TbItem;
+
+public interface ItemService extends BaseService<TbItem, Long>{
+	
+	/**
+	 * 添加
+	 * @param item
+	 * @param desc
+	 * @return
+	 */
+	KZWResult createItem(TbItem item, String desc, String itemParam) throws Exception;
+
+	/**
+	 * 根据商品id把规格参数封装成html片段
+	 * @param itemId
+	 * @return
+	 */
+	String getItemParamHtml(Long itemId);
+	
+	/**
+	 * 通过主键更新
+	 * @param item
+	 */
+	void updateByPrimaryKey(TbItem item);
+	
+}

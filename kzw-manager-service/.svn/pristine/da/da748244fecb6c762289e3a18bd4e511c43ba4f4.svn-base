@@ -1,0 +1,29 @@
+package com.kzw.service.impl;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.kzw.pojo.TbUser;
+import com.kzw.mapper.TbUserMapper;
+import com.kzw.service.UserService;
+
+@Service("userService")
+public class UserServiceImpl implements UserService {
+
+	@Resource
+	private TbUserMapper userMapper;
+	
+	@Override
+	public TbUser selectById(Long userId) {
+		
+		return userMapper.selectByPrimaryKey(userId);
+	}
+
+	@Override
+	public TbUser selectByUser(TbUser user) {
+		
+		return userMapper.selectByUser(user);
+	}
+
+}

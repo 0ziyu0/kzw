@@ -1,0 +1,21 @@
+package com.kzw.common.util;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+public class DataUtil {
+
+	public static Date getDateByString(String str) {
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date date = null;
+		
+		try {
+            date = (Date) simpleDateFormat.parse(str);//将这个字符型的时间转换成Date型的时间
+        } catch (Exception e) {
+        	e.printStackTrace();
+//        	throw new RuntimeException();
+        	return null;
+        }
+		return date;
+	}
+}

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kzw.mapper.TbTimesMapper" >
+  <resultMap id="BaseResultMap" type="com.kzw.pojo.TbTimes" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="strategy_id" property="strategyId" jdbcType="INTEGER" />
+    <result column="begin_time" property="beginTime" jdbcType="INTEGER" />
+    <result column="end_time" property="endTime" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, strategy_id, begin_time, end_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from tb_times
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from tb_times
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.kzw.pojo.TbTimes" >
+    insert into tb_times (id, strategy_id, begin_time, 
+      end_time)
+    values (#{id,jdbcType=INTEGER}, #{strategyId,jdbcType=INTEGER}, #{beginTime,jdbcType=INTEGER}, 
+      #{endTime,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.kzw.pojo.TbTimes" >
+    insert into tb_times
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="strategyId != null" >
+        strategy_id,
+      </if>
+      <if test="beginTime != null" >
+        begin_time,
+      </if>
+      <if test="endTime != null" >
+        end_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="strategyId != null" >
+        #{strategyId,jdbcType=INTEGER},
+      </if>
+      <if test="beginTime != null" >
+        #{beginTime,jdbcType=INTEGER},
+      </if>
+      <if test="endTime != null" >
+        #{endTime,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.kzw.pojo.TbTimes" >
+    update tb_times
+    <set >
+      <if test="strategyId != null" >
+        strategy_id = #{strategyId,jdbcType=INTEGER},
+      </if>
+      <if test="beginTime != null" >
+        begin_time = #{beginTime,jdbcType=INTEGER},
+      </if>
+      <if test="endTime != null" >
+        end_time = #{endTime,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.kzw.pojo.TbTimes" >
+    update tb_times
+    set strategy_id = #{strategyId,jdbcType=INTEGER},
+      begin_time = #{beginTime,jdbcType=INTEGER},
+      end_time = #{endTime,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <delete id="deleteByStrategyId" parameterType="java.lang.Integer" >
+    delete from tb_times
+    where strategy_id = #{StrategyId,jdbcType=INTEGER}
+  </delete>
+</mapper>

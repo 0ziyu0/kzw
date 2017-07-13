@@ -1,0 +1,11 @@
+package com.kzw.service;
+
+import com.kzw.pojo.TbUser;
+
+
+public interface UserService {
+
+	TbUser selectById(Long userId);
+	
+	TbUser selectByUser(TbUser user);
+}

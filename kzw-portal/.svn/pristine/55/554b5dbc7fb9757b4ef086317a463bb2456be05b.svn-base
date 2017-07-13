@@ -1,0 +1,36 @@
+package com.kzw.portal.controller;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.kzw.common.pojo.KZWResult;
+import com.kzw.common.util.ExceptionUtil;
+import com.kzw.portal.service.StaticPageService;
+
+
+@Controller
+public class StaticPageController {
+
+	@Resource
+	private StaticPageService staticpageService;
+	
+	@RequestMapping("/gen/item/{itemId}")
+	@ResponseBody
+	public KZWResult genItemPage(@PathVariable Long itemId){
+		
+		try {
+			return staticpageService.getItemHtml(itemId);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return KZWResult.build(500, ExceptionUtil.getStackTrace(e));
+		}
+		
+		
+	}
+	
+	
+}

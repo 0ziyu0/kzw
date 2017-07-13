@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kzw.search.mapper.ItemMapper">
+
+	<select id="getItemList" resultType="com.kzw.search.pojo.SearchItem">
+		SELECT
+		a.id,
+		a.title,
+		a.store_id,
+		a.sell_point,
+		a.price,
+		a.num,
+		a.image,
+		a.buy_price,
+		b.`name` category_name,
+		c.item_desc
+		FROM
+		tb_item a
+		LEFT JOIN tb_item_cat b ON a.cid = b.id
+		LEFT JOIN tb_item_desc c ON a.id = c.item_id
+		WHERE
+		a.`status` = 1
+
+	</select>
+
+<select id="selectPage" parameterType="java.util.HashMap" resultType="com.kzw.search.pojo.SearchItem">
+ SELECT DISTINCT a.id,
+		         a.title,
+		         a.store_id,
+		         a.sell_point,
+		         a.price,
+		         a.num,
+		         a.image,
+		         a.buy_price,
+		         b.`name` category_name,
+		         c.item_desc,
+		         s.id strategyId,
+		         store.store_name store_name
+		         FROM
+					  tb_item a
+				  	  LEFT JOIN tb_item_cat b ON a.cid = b.id
+					  LEFT JOIN tb_item_desc c ON a.id = c.item_id
+				      LEFT JOIN tb_strategy s ON s.store_id = a.store_id
+				      LEFT JOIN tb_store store ON a.store_id = store.id
+					  LEFT JOIN tb_times t ON t.strategy_id = s.id
+		<where>
+			<if test="keyword != null and keyword !=''">
+				AND a.title like CONCAT('%',#{keyword},'%' ) 
+			</if>
+			<if test="way != null and way !=''">
+				AND s.way = #{way} 
+			</if>
+			<if test="area != null and area !=''">
+				AND s.area = #{area} 
+			</if>
+			<if test="sex != null and sex !=''">
+				AND s.sex = #{sex} 
+			</if>
+			<if test="dong != null and dong !=''">
+				AND s.dong = #{dong} 
+			</if>
+			<if test="floor != null and floor !=''">
+				AND s.floor = #{floor} 
+			</if>
+			<if test="other != null and other !=''">
+				AND s.other = #{other} 
+			</if>
+			    AND  a.`status` = 1 AND (SELECT COUNT(*) FROM tb_times tb WHERE tb.strategy_id = s.id and begin_time = #{beginTime}) > 0
+		</where>
+	</select>
+	
+	<select id="beginTime" resultType="integer" parameterType="integer">
+		select count(*) from tb_times where begin_time = #{beginTime}
+	</select>
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,14 @@
+package com.kzw.order.service;
+
+import com.kzw.order.pojo.OrderInfo;
+
+public interface OrderService {
+
+	/**
+	 * 创建订单
+	 * @param orderInfo
+	 * @return
+	 */
+	String createOrder(OrderInfo orderInfo);
+	
+}

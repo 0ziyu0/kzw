@@ -1,0 +1,82 @@
+package com.kzw.portal.controller;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.joda.time.DateTime;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import com.kzw.pojo.TbUser;
+import com.kzw.portal.pojo.CartItem;
+import com.kzw.portal.pojo.OrderInfo;
+import com.kzw.portal.service.CartService;
+import com.kzw.portal.service.OrderService;
+
+
+@Controller
+@RequestMapping("/order")
+public class OrderController {
+
+	@Resource
+	private CartService cartService;
+	@Resource
+	private OrderService orderService;
+	
+	@RequestMapping("/order-cart")
+	public String showOrderCart(Model model, HttpServletRequest request) {
+		
+		List<CartItem> list = cartService.getCartItems(request);
+		model.addAttribute("cartList", list);
+		
+		return "order-cart";
+	}
+	
+	@RequestMapping(value = "/create", method = RequestMethod.POST)
+	public String createOrder(OrderInfo orderInfo, Model model, HttpServletRequest request) {
+		
+		TbUser user = (TbUser) request.getAttribute("user");
+		orderInfo.setUserId(user.getId());
+		orderInfo.setBuyerNick(user.getUsername());
+		
+		String order_id = orderService.createOrder(orderInfo);
+		model.addAttribute("orderId", order_id);
+		model.addAttribute("payment", orderInfo.getPayment());
+		DateTime time = new DateTime();
+		time = time.plusDays(3);
+		model.addAttribute("date", time.toString("yyyy-MM-dd"));
+		
+		return "success";
+	}
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

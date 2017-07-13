@@ -1,0 +1,31 @@
+package com.kzw.mapper;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.kzw.pojo.TbStrategy;
+import com.kzw.pojo.TbTimes;
+
+public interface TbStrategyMapper {
+    int deleteByPrimaryKey(Integer id);
+
+    int insert(TbStrategy record);
+
+    int insertSelective(TbStrategy record);
+
+    TbStrategy selectByPrimaryKey(Integer id);
+
+    int updateByPrimaryKeySelective(TbStrategy record);
+
+    int updateByPrimaryKey(TbStrategy record);
+    
+    List<TbStrategy> findStrategyList(@Param(value="storeId") Long storeId);
+    
+    List<TbTimes> selectTimeBySid(@Param(value="strategyId") int strategyId);
+    
+    List<TbStrategy> selectByStrategy(TbStrategy strategy);
+
+	void insertStrategy(@Param(value="list") List<TbStrategy> list);
+	
+}

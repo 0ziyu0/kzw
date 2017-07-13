@@ -1,0 +1,13 @@
+package com.kzw.search.service;
+
+import com.kzw.common.pojo.KZWResult;
+
+public interface ItemService {
+
+	/**
+	 * 导入索引库
+	 * @return
+	 */
+	KZWResult importItems() throws Exception;
+
+}

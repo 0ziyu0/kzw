@@ -1,0 +1,14 @@
+package com.kzw.portal.service;
+
+import com.kzw.common.pojo.KZWResult;
+
+public interface StaticPageService {
+
+	/**
+	 * 根据商品ID生成对应的静态页面
+	 * @param itemId
+	 * @return
+	 * @throws Exception
+	 */
+	KZWResult getItemHtml(Long itemId) throws Exception;
+}

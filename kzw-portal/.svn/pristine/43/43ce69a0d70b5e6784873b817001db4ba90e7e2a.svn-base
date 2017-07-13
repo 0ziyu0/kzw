@@ -1,0 +1,207 @@
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>开张个人主页</title>
+<link type="text/css" rel="stylesheet" href="/css/kzw/uikit.min.css" />
+<link type="text/css" rel="stylesheet" href="/css/personal/reset.css">
+<link type="text/css" rel="stylesheet" href="/css/personal/main.css">
+<script src="/js/kzw/uikit.min.js"></script> 
+<script src="/js/jquery-1.6.4.js"></script>
+</head>
+
+<body>
+	<div id="wrapper">
+
+		<div class="headerBar">
+			<%@include file="PersonCenterHeader.html"%>
+		</div>
+
+		<div class="banner comWidth clearfix hide">
+			<div class="banner_bar banner_big">
+				<ul class="imgBox">
+					<li><a href="#"><img src="images/banner/banner_01.jpg"
+							alt="banner"></a></li>
+					<li><a href="#"><img src="images/banner/banner_02.jpg"
+							alt="banner"></a></li>
+				</ul>
+				<div class="imgNum">
+					<a href="#" class="active"></a><a href="#"></a>
+				</div>
+			</div>
+ 
+		</div>
+		
+		
+<div class="hr_15"></div>
+		<div class="comWidth clearfix products ">
+			<div class="leftArea products">
+				<div class="leftNav vertical">
+					<h3 class="nav_title">个人中心</h3>
+					<div class="nav_cont">
+						<ul class="navCont_list clearfix" style="text-align:center;!imp">
+							<li><a href="/good/order">商品订单</a></li>
+							<li><a href="/good/order">二手订单</a></li>
+							<li class="active"><a href="/personalCenter/onsell.action">在售宝贝</a></li>
+							<li><a href="/good/conllectInf">我的收藏</a></li>
+							<li ><a href="/personalCenter/index.action">发布商品</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+			<div style="width:110%">
+				<h4>${msg}</h4>
+				<table id="itemTable" class="uk-table uk-table-middle uk-table-hover uk-table-striped"
+					style="width:79%;text-align:center;">
+					<tr>
+						<td>商品主题 </td>
+						<td>商品价格</td>
+						<td>商品描述</td>
+						<td>发布时间</td>
+						<td>商品图片</td>
+					</tr>
+					<c:forEach items="${result.seitemList}" var="goods">
+						<tr>
+							<td><a href="<c:url value='#${goods.itemid}'/>"> <span>${goods.itemname}</span></a></td>
+							<td><span>${goods.itemprice }</span></td>
+							<td><span>${goods.itemdescription }</span></td>
+							<td><span>${goods.uptime}</span></td>
+							<td><span><img src="<c:url value='${goods.img}' />" height="40"
+								width="50" /></span></td>
+						</tr>
+						
+					</c:forEach>
+					
+				</table>
+				<br>
+			</div>
+		</div>
+		<!-- 分页链接 -->
+		<div align="center" style="padding-left:10%;font-size: 15px">
+			<a id="fristPage" href="javascript:changePage('fristPage')">首页</a> 
+			<a id="previousPage" href="javascript:changePage('previousPage')">上一页</a>
+			第<span id="nowPage">${result. pageNum}</span>页/共
+			<span id="totalPage">${result.pages }</span>页
+			 <a id="nextPage" href="javascript:changePage('nextPage')">下一页</a>
+			<c:if test="${result.pageNum <result.pages}">
+				<a id="lastPage" href="javascript:changePage('lastPage')">尾页</a>
+			</c:if>
+		</div>
+
+	</div>
+
+
+	<!-- wrapper结束 -->
+	<div class="hr_25"></div>
+
+
+	<div class="footer">
+		<p>
+			<a href="#">开张网简介</a><i>|</i><a href="#">开张网公告</a><i>|</i><a href="#">联系我们</a><i>|</i><a
+				href="#">客服热线：028-87820878</a>
+		</p>
+		<p class="web">
+			<a href="#"><img src="/images/webLogo.jpg" alt="logo"></a><a
+				href="#"><img src="/images/webLogo.jpg" alt="logo"></a><a
+				href="#"><img src="/images/webLogo.jpg" alt="logo"></a>
+		</p>
+	</div>
+</body>
+<script>
+
+function changePage(id){
+	var totalPage=$("#totalPage").text();//共多少页
+	var nowPage=$("#nowPage").text();//当前页
+	var pageNum=1;
+	
+	if(totalPage==nowPage && (id=="nextPage"|| id=="lastPage")){
+		pageNum=totalPage;
+	}else{
+	if(id=="previousPage" && parseInt(totalPage)>2){
+		 pageNum=parseInt(nowPage)-1;
+	}else if(id=="nextPage" && parseInt(nowPage)<parseInt(totalPage) ){
+		pageNum=parseInt(nowPage)+1;
+	}else if(id=="lastPage"){
+		pageNum=totalPage;
+	}else{
+		pageNum=1;
+	}}
+	ajax(pageNum);
+}	
+
+	function ajax(pageNum){
+				$.ajax({
+				    url: "/personalCenter/onsellJson.action",    //请求的url地址
+				    dataType: "json",   //返回格式为json
+				    async: true, //请求是否异步，默认为异步，这也是ajax重要特性
+				    data: {"pageNum": pageNum },    //参数值
+				    type: "post",   //请求方式
+				    success: function(date) {
+				    $("#nowPage").text(date.pageNum);
+				    $("#totalPage").text(date.pages);
+				        
+				     $("#itemTable").html("");
+				     var html=" <tr><td>商品主题 </td><td>商品价格</td><td>商品描述</td><td>发布时间</td><td>商品图片</td></tr>";
+				     $.each(date.seitemList, function(i, seitem){  
+					html+="	<tr><td><a href='<c:url value='#${goods.itemid}'/>'>"
+					html+="<span>"+seitem.itemname+"</span></a></td><td><span>"+seitem.itemprice +"</span></td>"
+					html+="	<td><span>"+seitem.itemdescription+" </span></td>"
+					html+="	<td><span>"+seitem.uptime+"</span></td>"
+					html+="	<td><span><img src='<c:url value='"+seitem.img
+					html+="' />' height='40'width='50' /></span></td></tr>"				
+						
+					})
+					$("#itemTable").html(html);	
+				        //请求成功时处理
+				    },
+				    complete: function() {
+				        //请求完成的处理
+				    },
+				    error: function(date) {
+				    /* 	<div class="uk-alert" data-uk-alert>
+				    		    <a href="" class="uk-alert-close uk-close"></a>
+				    		    <p>...</p>
+				    		</div> */
+				        //请求出错处理
+				    }
+				});					
+				
+			}			
+
+
+
+</script>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

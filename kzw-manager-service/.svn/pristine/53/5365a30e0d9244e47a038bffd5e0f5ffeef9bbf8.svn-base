@@ -1,0 +1,18 @@
+package com.kzw.service;
+
+import com.kzw.pojo.TbStore;
+
+/**
+ * 店铺service
+ * @author 子煜
+ *
+ */
+public interface StoreService {
+
+	/**
+	 * 通过用户ID查询
+	 * @param userId
+	 * @return
+	 */
+	TbStore selectByuserId(Long userId);
+}

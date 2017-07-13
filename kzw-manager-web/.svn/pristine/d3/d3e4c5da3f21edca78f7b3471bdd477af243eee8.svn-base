@@ -1,0 +1,12 @@
+0:0:0:0:0:0:0:1 - - [15/Dec/2016:17:05:38 +0800] "GET / HTTP/1.1" 200 2477 http-bio-8088-exec-1 662
+0:0:0:0:0:0:0:1 - - [15/Dec/2016:17:05:38 +0800] "GET /js/jquery-easyui-1.4.1/jquery.easyui.min.js HTTP/1.1" 304 - http-bio-8088-exec-6 52
+0:0:0:0:0:0:0:1 - - [15/Dec/2016:17:05:38 +0800] "GET /js/jquery-easyui-1.4.1/themes/default/easyui.css HTTP/1.1" 304 - http-bio-8088-exec-2 57
+0:0:0:0:0:0:0:1 - - [15/Dec/2016:17:05:38 +0800] "GET /css/taotao.css HTTP/1.1" 304 - http-bio-8088-exec-4 53
+0:0:0:0:0:0:0:1 - - [15/Dec/2016:17:05:38 +0800] "GET /js/jquery-easyui-1.4.1/jquery.min.js HTTP/1.1" 304 - http-bio-8088-exec-5 54
+0:0:0:0:0:0:0:1 - - [15/Dec/2016:17:05:38 +0800] "GET /js/jquery-easyui-1.4.1/themes/icon.css HTTP/1.1" 304 - http-bio-8088-exec-3 54
+0:0:0:0:0:0:0:1 - - [15/Dec/2016:17:05:38 +0800] "GET /js/jquery-easyui-1.4.1/locale/easyui-lang-zh_CN.js HTTP/1.1" 304 - http-bio-8088-exec-7 52
+0:0:0:0:0:0:0:1 - - [15/Dec/2016:17:05:38 +0800] "GET /js/common.js HTTP/1.1" 304 - http-bio-8088-exec-9 3
+0:0:0:0:0:0:0:1 - - [15/Dec/2016:17:05:40 +0800] "GET /item-add?_=1481792738908 HTTP/1.1" 200 4717 http-bio-8088-exec-9 71
+0:0:0:0:0:0:0:1 - - [15/Dec/2016:17:05:40 +0800] "GET /js/kindeditor-4.1.10/kindeditor-all-min.js?_=1481792738909 HTTP/1.1" 200 179915 http-bio-8088-exec-9 6
+0:0:0:0:0:0:0:1 - - [15/Dec/2016:17:05:40 +0800] "GET /js/kindeditor-4.1.10/lang/zh_CN.js?_=1481792738910 HTTP/1.1" 200 8488 http-bio-8088-exec-9 3
+0:0:0:0:0:0:0:1 - - [15/Dec/2016:17:06:01 +0800] "POST /item/cat/list HTTP/1.1" 200 977 http-bio-8088-exec-9 20307

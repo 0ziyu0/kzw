@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kzw.mapper.TbItemMapper" >
+  <resultMap id="BaseResultMap" type="com.kzw.pojo.TbItem" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="store_id" property="storeId" jdbcType="BIGINT" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="sell_point" property="sellPoint" jdbcType="VARCHAR" />
+    <result column="price" property="price" jdbcType="BIGINT" />
+    <result column="num" property="num" jdbcType="INTEGER" />
+    <result column="barcode" property="barcode" jdbcType="VARCHAR" />
+    <result column="image" property="image" jdbcType="VARCHAR" />
+    <result column="cid" property="cid" jdbcType="BIGINT" />
+    <result column="status" property="status" jdbcType="TINYINT" />
+    <result column="createTime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="updateTime" property="updatetime" jdbcType="TIMESTAMP" />
+    <result column="buy_price" property="buyPrice" jdbcType="BIGINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, store_id, title, sell_point, price, num, barcode, image, cid, status, createTime, 
+    updateTime, buy_price
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from tb_item
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from tb_item
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="delete" parameterType="java.lang.Long" >
+    delete from tb_item
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.kzw.pojo.TbItem" >
+    insert into tb_item (id, store_id, title, 
+      sell_point, price, num, 
+      barcode, image, cid, 
+      status, createTime, updateTime, 
+      buy_price)
+    values (#{id,jdbcType=BIGINT}, #{storeId,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, 
+      #{sellPoint,jdbcType=VARCHAR}, #{price,jdbcType=BIGINT}, #{num,jdbcType=INTEGER}, 
+      #{barcode,jdbcType=VARCHAR}, #{image,jdbcType=VARCHAR}, #{cid,jdbcType=BIGINT}, 
+      #{status,jdbcType=TINYINT}, #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, 
+      #{buyPrice,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.kzw.pojo.TbItem" >
+    insert into tb_item
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="storeId != null" >
+        store_id,
+      </if>
+      <if test="title != null" >
+        title,
+      </if>
+      <if test="sellPoint != null" >
+        sell_point,
+      </if>
+      <if test="price != null" >
+        price,
+      </if>
+      <if test="num != null" >
+        num,
+      </if>
+      <if test="barcode != null" >
+        barcode,
+      </if>
+      <if test="image != null" >
+        image,
+      </if>
+      <if test="cid != null" >
+        cid,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="createtime != null" >
+        createTime,
+      </if>
+      <if test="updatetime != null" >
+        updateTime,
+      </if>
+      <if test="buyPrice != null" >
+        buy_price,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="storeId != null" >
+        #{storeId,jdbcType=BIGINT},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="sellPoint != null" >
+        #{sellPoint,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null" >
+        #{price,jdbcType=BIGINT},
+      </if>
+      <if test="num != null" >
+        #{num,jdbcType=INTEGER},
+      </if>
+      <if test="barcode != null" >
+        #{barcode,jdbcType=VARCHAR},
+      </if>
+      <if test="image != null" >
+        #{image,jdbcType=VARCHAR},
+      </if>
+      <if test="cid != null" >
+        #{cid,jdbcType=BIGINT},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null" >
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="buyPrice != null" >
+        #{buyPrice,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="update" parameterType="com.kzw.pojo.TbItem" >
+    update tb_item
+    <set >
+      <if test="storeId != null" >
+        store_id = #{storeId,jdbcType=BIGINT},
+      </if>
+      <if test="title != null" >
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="sellPoint != null" >
+        sell_point = #{sellPoint,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null" >
+        price = #{price,jdbcType=BIGINT},
+      </if>
+      <if test="num != null" >
+        num = #{num,jdbcType=INTEGER},
+      </if>
+      <if test="barcode != null" >
+        barcode = #{barcode,jdbcType=VARCHAR},
+      </if>
+      <if test="image != null" >
+        image = #{image,jdbcType=VARCHAR},
+      </if>
+      <if test="cid != null" >
+        cid = #{cid,jdbcType=BIGINT},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="createtime != null" >
+        createTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null" >
+        updateTime = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="buyPrice != null" >
+        buy_price = #{buyPrice,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.kzw.pojo.TbItem" >
+    update tb_item
+    set store_id = #{storeId,jdbcType=BIGINT},
+      title = #{title,jdbcType=VARCHAR},
+      sell_point = #{sellPoint,jdbcType=VARCHAR},
+      price = #{price,jdbcType=BIGINT},
+      num = #{num,jdbcType=INTEGER},
+      barcode = #{barcode,jdbcType=VARCHAR},
+      image = #{image,jdbcType=VARCHAR},
+      cid = #{cid,jdbcType=BIGINT},
+      status = #{status,jdbcType=TINYINT},
+      createTime = #{createtime,jdbcType=TIMESTAMP},
+      updateTime = #{updatetime,jdbcType=TIMESTAMP},
+      buy_price = #{buyPrice,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <select id="selectPage" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+		SELECT *from tb_item 
+		<where>
+			<if test="storeId != null and storeId !=''">
+			 	AND store_id = #{storeId}
+			</if>
+			<if test="title != null and title !=''">
+				AND title like CONCAT('%',#{title},'%' ) 
+			</if>
+			<if test="barcode != null and barcode !=''">
+				AND barcode like CONCAT('%',#{barcode},'%' ) 
+			</if>
+			<if test="status != null and status !=''" >
+       			AND status = #{status} 
+      		</if>
+      		<if test="createtime != null and createtime !=''">
+      			AND unix_timestamp(createTime) &gt;= unix_timestamp(#{createtime}) 
+      		</if>
+      		<if test="updatetime != null and updatetime !=''">
+      			AND unix_timestamp(createTime) &lt;= unix_timestamp(#{updatetime}) 
+      		</if>
+		</where>
+	</select>
+	
+	<update id="instock" parameterType="java.util.List">
+		update tb_item set status=2 where id IN 
+		<foreach collection="ids" item="id" index="index" open="(" separator="," close=")" >  
+        	#{id}  
+    	</foreach> 
+	</update>
+	
+	<update id="reshelf" parameterType="java.util.List">
+		update tb_item set status=1 where id IN 
+		<foreach collection="ids" item="id" index="index" open="(" separator="," close=")" >  
+        	#{id}  
+    	</foreach> 
+	</update>
+	
+	<select id="selectByCid" parameterType="java.lang.Long" resultMap="BaseResultMap">
+		select *from tb_item where status=1 and cid=#{id,jdbcType=BIGINT}
+	</select>
+</mapper>

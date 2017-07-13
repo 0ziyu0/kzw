@@ -1,0 +1,1 @@
+<%response.sendRedirect("druid/sql.html"); %> 

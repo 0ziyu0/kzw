@@ -1,0 +1,15 @@
+com\kzw\mapper\TbOrderShippingMapper.class
+com\kzw\mapper\TbItemParamItemMapper.class
+com\kzw\mapper\TbPartnerMapper.class
+com\kzw\mapper\TbItemCatMapper.class
+com\kzw\mapper\TbItemMapper.class
+com\kzw\mapper\TbRoleMapper.class
+com\kzw\mapper\TbItemDescMapper.class
+com\kzw\mapper\TbContentCategoryMapper.class
+com\kzw\mapper\TbContentMapper.class
+com\kzw\mapper\TbStoreMapper.class
+com\kzw\mapper\TbOrderMapper.class
+com\kzw\mapper\TbUserMapper.class
+com\kzw\mapper\TbRoleUserMapper.class
+com\kzw\mapper\TbOrderItemMapper.class
+com\kzw\mapper\TbItemParamMapper.class

@@ -1,0 +1,101 @@
+package com.kzw.common.util;
+
+import org.csource.common.NameValuePair;
+import org.csource.fastdfs.ClientGlobal;
+import org.csource.fastdfs.StorageClient1;
+import org.csource.fastdfs.StorageServer;
+import org.csource.fastdfs.TrackerClient;
+import org.csource.fastdfs.TrackerServer;
+
+public class FastDFSClient {
+
+	// 创建一个TrackerClient对象。
+		private TrackerClient trackerClient;
+		// 创建一个TrackerServer对象
+		private TrackerServer trackerServer;
+		// 声明一个StorageServer对象
+		private StorageServer storageServer;
+		// 获得StorageClient对象
+		private StorageClient1 storageClient1;
+		
+		public FastDFSClient(String conf) throws Exception {
+			
+			System.out.println("============" + conf);
+			
+			if(conf.contains("classpath:")) {
+				conf = conf.replace("classpath:", this.getClass().getResource("/").getPath());
+							  // /E:/java_web/jQuery/testFDFS/bin/
+			}
+			System.out.println("============123" + conf);
+			
+			ClientGlobal.init(conf);
+			
+			System.out.println("============233" + conf);
+			trackerClient = new TrackerClient();
+			trackerServer = trackerClient.getConnection();
+			storageServer = null;
+			storageClient1 = new StorageClient1(trackerServer, storageServer);
+		}
+		
+		public String uploadFile(byte[] fileContent, String extName, NameValuePair[] metas) throws Exception {
+			
+			String result = storageClient1.upload_file1(fileContent, extName, metas);
+			return result;
+		}
+		
+		public String uploadFile(byte[] fileContent) throws Exception {
+			return uploadFile(fileContent, null, null);
+		}
+		
+		public String uploadFile(byte[] fileContent, String exName) throws Exception {
+			return uploadFile(fileContent, exName, null);
+		}
+		
+		public String uploadFile(String fileName, String extName, NameValuePair[] metas) throws Exception {
+			
+			String result = storageClient1.upload_file1(fileName, extName, metas);
+			return result;
+		}
+		
+		public String uploadFile(String fileName) throws Exception {
+			return uploadFile(fileName, null, null);
+		}
+		
+		public String uploadFile(String fileName, String exName) throws Exception {
+			return uploadFile(fileName, exName, null);
+		}
+		
+		/**
+		 * 删除文件
+		 * @param group  组名 例如  ：group1
+		 * @param fileName  包含文件存储格式和文件名字  例如：M00/00/00/Co0_W1hSJteAQgq3AABgstppnbM904.jpg
+		 * @return
+		 * @throws Exception
+		 */
+		public int deleteFile(String group, String fileName) throws Exception {
+			
+			return storageClient1.delete_file(group, fileName);
+		}
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

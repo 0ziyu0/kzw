@@ -1,0 +1,305 @@
+﻿@charset "utf-8";
+/* CSS Document */
+
+/*公用*/
+.comWidth{width:1000px;margin-left:auto;margin-right:auto;}
+.leftArea{float:left;}
+.rightArea{float:right;}
+/*　确保不足一页时候页脚格式正确*/
+	#wrapper{
+	min-height:80%;
+	margin:auto;
+	}
+
+/*topBar*/
+.topBar{height:31px;background-color:#F7F7F7;line-height:31px;}
+.collection{padding-left:19px;font-weight:bold;}
+.topBar a:hover{color:red;}
+
+/*logo*/
+.logoBar{height:85px;background-color:#1D7AD9}
+.logo{padding-left:41px;padding;padding-top:13px;}
+
+/*search*/
+.select_good{width:65px;height:35px;background-color:#FF8C00}
+.search_box{width:490px;padding-top:23px;padding-left:185px;}
+.search_text{width:350px;height:14px;line-height:14px;padding:11px 5px 10px;background-color:#FFF;}
+.search_btn{width:70px;height:35px;font-size:14px;font-family:"Microsoft YaHei","微软雅黑";background-color:#FF8C00;}
+/*shopCar */
+.shopCar{width:145px;height:35px;background-color:#FF8c00;margin-top:23px;font:14px/35px "Microsoft YaHei","微软雅黑";color:#FFF;margin-right:59px;display:inline;}
+.shopText{height:100%;width:87px;border-right:#E27A00 solid 1px;background:
+url(../images/icon/shopIcon.gif) 10px center no-repeat;text-indent:40px;}
+.shopNum{width:27px;height:65px;border-left:#FF9C01 solid 1px;background:url(../images/icon/sanjiao.gif) 33px center no-repeat;text-align:right;
+padding-right:29px;}
+
+/*导航*/
+.navBox{height:35px;background-color:#1369C0;color:#FFF;}
+.shopClass{width:190px;position:relative;}
+.shopClass h3{text-align:center;line-height:35px;}
+.shopClass i{width:11px;height:7px;overflow:hidden;background:url(../images/icon/goodsj.gif) left center no-repeat;display:inline-block;
+margin-left:11px;}
+.nav,.shopClass{font-family:"Microsoft Yahei","微软雅黑";}
+.nav{line-height:35px;}
+.nav li{float:left;}
+.nav a{height:35px;display:inline-block;padding:0 35px;color:#FFF;}
+.nav .active{background-color:#4593FD;}
+/*商品弹出列表*/
+.shopClass_show{background-color:#4593FD;position:absolute;left:0;top:35px;width:100%;padding-bottom:1px;}
+.shopClass_item{padding:13px 10px;border-bottom:#3487F2 solid 1px;border-top:#5AA1FE solid 1px;line-height:16px;}
+.shopClass_item dt{height:21px;line-height:1;overflow:hidden;background:url(../images/icon/112.jpg) right center no-repeat;}
+.shopClass_item .b{font-family:"Microsoft Yahei","微软雅黑";font-size:14px;font-weight:bold;}
+.shopClass_item a{color:#FFF;}
+.shopClass_item .aLink{width:48px;height:20px;background:url(../images/icon/a1linpg.png) left center no-repeat;display:inline-block;text-align:center;line-height:20px;text-decoration:underline;}
+
+/*banner 部分*/
+.banner{margin-bottom:20px;}
+.banner_bar{float:right;position:relative;overflow:hidden;}
+.imgBox{position:absolute;left:0;top:0;}/*absolute 定位 必须要给出x y轴值*/
+.imgBox li{float:left;}
+.imgBox img{display:block;}
+.imgNum{position:absolute;left:0;bottom:15px;width:100%;text-align:center;}
+.imgNum a{width:20px;height:5px;overflow:hiddent;background-color:#FFF;display:inline-block;
+margin:0 3px;}
+.imgNum .active{background-color:#FF7700;}
+.banner_big,
+.banner_big{width:810px;height:326px;}
+.banner_big.imgBox{width:1620px;height:326px;}
+.banner_sm,
+.banner_sm img{width:190px;height:400px;}
+.banner_sm .imgBox{width:380px;height:400px;}
+
+
+/*商品标题*/
+.shotTittle{height:44px;font-family:"Microsoft Yahei","微软雅黑";line-height:44px;margin-bottom:15px;}
+.shotTittle h3{font-size:24px;float:left;font-weight:normal;padding-left:15px;}
+.icon{width:44px;height:44px;background:url(../images/icon/shopIcon1.gif) left top no-repeat;float:left;}
+.more{float:right;font-family:"宋体";}
+.more:hover{text-decoration:underline;}
+/*商品列表*/
+.shopList .leftArea{width:190px;}
+.shopList .rightArea{width:808px;border:#999 solid 1px;border-bottom:#FF7201 solid 3px;height:396px;overflow:hidden;}
+.shopList .leftArea banner_bar{width:190px;}
+/*商品列表-右侧*/
+.shopList{margin-bottom:15px;}
+.shopList_top,.shopList_sm{margin-right:-4px;}
+.shop_item{width:202px; border-right:#999 solid 1px;height:279px;border-bottom:#999 solid 1px;text-align:center;font-family:"Microsoft Yahei","微软雅黑";float:left;}
+.shop_img{height:218px;}
+.shop_img img{width:100%;height:218px;display:block;}
+.shop_item h3{font-size:16px;}
+.shop_item p{font-size:14px;color:#FF7300;line-height:21px;}
+/*商品列表- xiao*/
+.shopItem_sm{width:202px;border-right:#999 solid 1px;hei0ght:110px;float:left;padding-top:6px;}
+.shopItem_smImg{width:95px;height:95px;text-align:center;float:left;}
+.shopItem_smImg img{width:95px;height:95px;}
+.shopItem_text{padding-top:28px;width:100px;float:left;}
+.shopItem_text p{color:#FF7300;}
+.shopItem_text h3{font-family:"Microsoft Yahei","微软雅黑";font-size:16px;font-weight:normal;color:#181818;line-weight:30;}
+
+/*footer*/
+.footer{background-color:#D4D4D4;text-align:center;line-height:24px;padding:50px 0;}
+.footer i{font-style:normal;margin:0 5px;}
+.footer a{color:#000;}
+.footer a:hover{color:#F60;}
+.web{padding-top:30px;}
+.web img{margin:0 12px;}
+.hr_25{height:25px;}
+.hr_15{height:15px;}
+.hr_7{ height:7px;overflow:hidden;float:none;}
+.hr_15{height:15px;}
+
+/*产品分类页css*/
+/*产品分类*/
+.products.leftArea{width:185px;}
+.products.rightArea{width:810px;}
+.products.banner_bar{ float:none;}
+.products.item{width:25%;*width:24.5%; margin-bottom:10px;}
+/*产品分类导航*/
+.leftNav{ background-color:#F3F3F3; border:#D7D7D7 solid 1px;}
+.nav_title{padding-left:8px;height:34px;line-height:34px; font-size:16px; border-bottom:#D7D7D7 solid 1px; text-align:center;}
+.nav_cont{padding:0 18px 4px;/*上 左右 下*/ border-bottom:#D7D7D7 1px dotted; margin-bottom:-1px; font-size:16px}
+.nav_cont h3{ font-size:12px; height:30px; line-height:30px;}
+.navCont_list{ line-height:25px;}
+.navCont_list li{float:left;width:50%;padding-top:5px;padding-bottom:5px}
+.nav_cont .active a{font-weight:bold; color:#1D7AD9;}
+
+.vertical li{width:auto; float:none; padding-left:8px;}
+.vertical.nav_title,
+.vertical.nav_cont h3{font-family:"Microsoft Yahei","微软雅黑"; font-size:14px;}
+/* 标题*/
+.products_title{height:34px; border-bottom:#CCCCCC solid 2px;}
+.products_title h3{width:180px;border-bottom:#096DBA solid 2px; height:34px; line-height:34px; text-indent:9px; margin-bottom:-2px;position:relative;}
+/*商品*/
+.item{float:left; position:relative;width:25%;height:265px;}
+.item_cont{padding:0 15px;}
+.img_item{height:170px;text-align:center;}
+.item p{line-height:20px;text-align:center;}
+.item a{color:#000;}
+.item a:hover{ text-decoration:underline;}
+.money{color:#D4105A; font-weight:bold;padding-top:10px;}
+.stars{width:13px;height:12px; overflow:hidden; background:url(../images/%E4%BA%94%E6%98%9F.gif) left top
+ no-repeat; display:inline-block; margin-right:1px;}
+.hot{width:52px; height:52px; background:url(../images/%E4%BA%94%E6%98%9F.gif) left top no-repeat; position:absolute; right:0; top:0;}
+
+
+/*韩丽颖*/
+ /*筛选页面*/
+.screening{border-bottom:#CCC solid 1px; font-family:Verdana;}
+.screening dt{line-height:32px; width:74px; text-align:right; float:left;margin-right:42px;}
+.limit{ width:55px;float:left;line-height:32px;}
+.screening .active{ background-color:#1D7AD9; color:#FFF; padding:2px;}
+.screening a{padding:2px;}
+.screening_list{line-height:32px; width:626px;float:left;}
+.screening_list li{width:20%; float:left;}
+.screen_more{border:#CCC solid 1px; height:23px; line-height:23px; margin-top:4px; float:left; 92% center no-repeat; padding-right:20px; padding-left:11px; margin-right:11px;} 
+.screen_more a{background:url(../images/icon/abc.png) right center no-repeat; padding-right:14px;}
+
+.addInfo{height:31px; border:#CCC solid 1px; background-color:#F5F5F5;}
+.address{float:left;}
+.add_text{float:left; line-height:31px;padding-left:12px;padding-right:6px;}
+.addInfo .select{margin-top:4px;}
+.screen_text{line-height:31px; padding-right:80px;}
+.check{position:relative;}
+.shop_number{position:relative;_top:4px;}
+.check input,
+.check label{vertical-align:middle;}
+.shop_number em{color:#F00; font-style:normal; font-weight:bold;}
+.screen_text span{vertical-align:middle;}
+.screening_list_more{padding-left:0.5%;}
+.screening_list_more .item{width:33.3%;}
+.addCar{border:#999 solid 1px; height:22px; display:inline-block; padding:0 6px 0 23px;background:url(../images/icon/addCar.jpg) 6px center no-repeat;}
+
+/*page*/
+.page{text-align:center; position:relative; z-index:2;}
+.page a{height:24px; display:inline-block; line-height:24px; border:#CCC solid 1px; padding:0 12px; margin:0 2px;}
+.page hl{display:inline-block; padding:0 12px; margin:0 2px;}
+.morePage{padding-left:14px; display:inline-block; height:24px; line-height:24px;}
+.pageNum{width:29px; padding:0 3px; border:#CCC solid 1px; height:24px; line-height:24px\9; text-align:center; margin-left:4px;}
+.page_btn{width:44px; height:24px; line-height:24px; background-color:#E8E8E8; border:#CCC solid 1px;}
+.ye{padding:0 8px 0 6px;}
+.page a,
+.page span,
+.page input{vertical-align:middle; position:relative;}
+
+
+
+
+ 
+ /*组件*/ 
+ 
+.select{border:#999 solid 1px; height:22px; line-height:22px; float:left; background-color:#FFF; padding-left:10px; padding-right:20px; position:relative; z-index:4;}
+.select h3{font-size:12px; font-weight:normal;}
+.select span{position:absolute; right:0; top:0; height:100%; width:20px;background:url(../images/icon/BlueSanjiao.jpg) center center no-repeat;}
+.show_select{position:absolute; left:-1px; top:22px; background-color:#FFF; width:100%;border:#999 solid 1px; display:none;}
+.show_select li{padding-left:10px;} 
+
+
+/*靳宗三*/
+.userPosition{font-size:0;width:300px font-family:Verdana; margin-top:25px; margin-bottom:15px;}
+.userPosition em,
+.userPosition strong,
+.userPosition span,
+.userPosition a{font-size:12px;}
+.userPosition em{font-style:normal;}
+.userPosition a:hover{text-decoration:underline;}
+.description_info{background-color:#FFF;} 
+.description{ border#CCC solid 1px;}
+.description.leftArea{width:309px;}
+.description.rightArea{width:688px; boder-left:#CCC solid ipx;}
+/*商品介绍*/
+.grey{background-color:#F0F0F0;}
+/*图片展示*/
+.description_imgs .big{height:340px;text-align:center;}
+.des_sming{padding-left:1px;width:265px; margin:0 auto;}
+.des_sming li{float:left; margin-left:-1px;}
+.des_sming img{border:#CCC solid 1px;}
+.des_sming.active{border-color:#317EE7; position:relative;}
+.des_content{padding:10px;}
+.dl content_tit{ bold font:16px/22px "Microsoft Yahei","微软雅黑";  padding:13px 25px;}
+.des_content .dl{ margin-bottom:8px;padding-top:16px;}
+.des_content .dt{width:77px; float:left; color:#666; text-indent:17px; height:23px;line-height:25px;padding-top:10px;}
+.des_money{font-size:18px; color:#F30; font-family:Verdana; padding-top:16px;}
+.des_money em{font-style:normal; font-size:12px;}
+/*换购*/
+.hg{ padding-top:4px; display:inline-block;}
+.hg_icon{width:55px; height:18px; display:inline-block; background:url(); left top no-repeat ; color:#FFF; font-style:normal; text-indent:16px; line-height:18px; margin-right:10px; float:left;} 
+/*送货*/
+.des_position{background-color:#F2F2F2; padding:15px 0;}
+.theGoods{line-height:24px; padding-left:10px;color:#F00;}
+.des_content.colorSelect{line-height:35px;}
+.des_item{ color:#666;padding:9px 10px; border:#CCC solid 1px; float:left; background-color:#FFF; margin-right:10px;}
+.des_item_avtice{ border-color:#317EEE7; color:#333}
+.des_item_sm{padding:3px 7px; margin-bottom:8px;}
+.des_select_more{line-height:55px;}
+/*数量*/
+.des_number{border:#B2B2B2; solid: 1px; height:32px; width:82px; float:left;}
+.des_number.div{height:100%;float:left;}
+.reduction.plus{width:15px; background:url(../images/bj1.gif)left top no-repeat;line-height:32px\9; text-align:center; color:#333;}
+.reduction{border-left:#CCC; solid: 1px;}
+.plus{border-right:#CCC; solid: 1px;}
+.des_input{width:42px; height: 30px; background: url(../images/bg2.gif) left top no-repeat; padding:0 4px;}
+.des_input input{width:100%;height:100%; line-height:32px\9; text-align:center;}
+.xg{ line-height:32px; float:left; padding-left:10px;font-weight:bold;}
+.xg em{color:#FB7700; font-style:normal;}
+.des_content.des_num{line-height:32px;}
+/*已选择*/
+.des_select{font-weight:bold; margin:22px 0 12px 0; text-indent:17px;}
+.des_select span{color:#0479C9;}
+.shopping_btn{display:inline-block; width:184px;height:48px; background: url(../images/16.gif)left top no-repeat;}
+.buy_btn{display:inline-block; width:184px;height:48px; background: url(../images/gw.gif)left top no-repeat;}
+.line{width:1px;heigth:90px; overflow:hidden; background-color:#CCC; display:inline-black; margin:0 40px;}
+.notes{color:#CCC; text-indent: 17px;}
+/*产品介绍*/
+.des_info.leftArea{width:190px;}
+.des_info.rightArea{width:790px;}
+.recommend{ border:#CCC solid 1px; background-color:#FFF;badding-bottom:15px;}
+.recommend.tit{height:39px; border-bottom:solid 1px #ccc; line-height:39px; text-indent:15px; font-size:14px; background-color:#F3F3F3;}
+.recommend.item{ float:none; margin:auto;}
+.recommend.money{ padding-top: 0;}
+/*详细介绍*/
+.des_infoContent{border:#CCC; solid 1px; background-color:#FFF;}
+.des_tit{ height:39px; border-bottom:#CCC solid 1px; background:url(../images/tit1.gif) left top repeat-x; }
+.des_tit li{ float:left; width:50%; font:14px/39px "宋体"; text-align:center; border-left:solid 1px #CCC; margin-left:-1px;}
+.des_tit active{background-color:#0479cA; font-weight:bold; color:#FFF; position:relative;}
+.des_tit span{background-color: url(../images/pj1.gif)left center no-repeat; padding-left:32px; display:inline-block; line-height:38px;}
+.info_tit{ height:26px; border-bottom:#CCC solid 1px;font-family:"Microsoft Yahei","微软雅黑"; margin-top:18px;}
+.info_tit h3{float:left; font-size:16px; color:#2357A5; border-bottom:#2357A5 solid 1px; height:26px; margin-bottom: -1px; position:relative;}
+.info_tit h4{ float-size:12px; line-height:26px; padding-left:4px; color:#656565;}
+.info_text{padding: 0 20px;margin-right:0;}
+.info_text p{ line-height:22px; font-size:14px; color:#656565;}
+.center{ display:block; margin:0 auto;}
+
+/*page*/
+.page{text-align:center; position:relative; z-index:2;}
+.page a{height:24px; display:inline-block; line-height:24px; border:#CCC solid 1px; padding:0 12px; margin:0 2px;}
+.page hl{display:inline-block; padding:0 12px; margin:0 2px;}
+.morePage{padding-left:14px; display:inline-block; height:24px; line-height:24px;}
+.pageNum{width:29px; padding:0 3px; border:#CCC solid 1px; height:24px; line-height:24px\9; text-align:center; margin-left:4px;}
+.page_btn{width:44px; height:24px; line-height:24px; background-color:#E8E8E8; border:#CCC solid 1px;}
+.ye{padding:0 8px 0 6px;}
+.page a,
+.page span,
+.page input{vertical-align:middle; position:relative;}
+
+/*我的页面*/
+.rightArea .myOrder{width:810px;}
+.myOrder .oneOrder p{padding-top:5px;}
+.myOrder .oneOrder img{width:180px;height:130px;}
+/*----------------------------------------------------*/	
+/*注册登录*/
+.login_logo .comWidth{width:460px;}
+.welcome_tittle{font:22px/85px "Mircosoft Yahei","微软雅黑";color:#FFF;float:left;padding-left:24px;}
+.loginBox{width:458px; border:#999 solid 1px;margin:130px auto;}
+.login_cont{padding:15px 76px;}
+.l_tit{color:#666;line-height:20px;}
+.login_input{border:#999 solid 1px;height:32px;line-height:32px\9;text-indent:5px;width:100%;}
+.user_icon{background:url(../images/icon/login.jpg) right center no-repeat;}
+.user_icon_ps{background:url(../images/icon/denglusps.jpg) right center no-repeat;}
+.mb_10{margin-bottom:10px;}
+.login_btn{width:309px;height:36px;background:url(../images/icon/login_button.jpg) left top no-repeat;margin-top:20px;}
+.reg_logo .comWidth{width:630px;}
+.regBox{width:628px;margin:10px auto;border:#CCC solid 1px;}
+.reg_item{font-size:14px;line-height:34px;font-family:"宋体";width:110px;text-align:right;float:left;}
+.reg_item i{color:red;font-style:normal;margin-right:5px;}
+.input_item{width:306px;float:left;}
+.regBox li{height:70px;vertical-align:top;}
+.regbutton{width:309px;height:36px;background:url(../images/icon/submit.jpg) center top no-repeat;}

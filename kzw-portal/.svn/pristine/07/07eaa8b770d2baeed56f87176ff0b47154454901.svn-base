@@ -1,0 +1,139 @@
+package com.kzw.portal.service.impl;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import com.kzw.common.pojo.KZWResult;
+import com.kzw.common.util.CookieUtils;
+import com.kzw.common.util.JsonUtils;
+import com.kzw.pojo.TbItem;
+import com.kzw.portal.pojo.CartItem;
+import com.kzw.portal.service.CartService;
+import com.kzw.portal.service.ItemService;
+
+@Service("cartService")
+public class CartServiceImpl implements CartService {
+
+	@Resource
+	private ItemService itemService;
+	@Value("${COOKIE_EXPIRE}")
+	private Integer COOKIE_EXPIRE;
+
+	@Override
+	public KZWResult addCart(Long itemId, Integer num,
+			HttpServletRequest request, HttpServletResponse response) {
+
+		boolean haveFlgs = false;
+		List<CartItem> itemList = this.getCartList(request);
+		for (CartItem cartItem : itemList) {
+			if(cartItem.getId().longValue() == itemId) {
+				cartItem.setNum(cartItem.getNum() + num);
+				haveFlgs = true;
+				break;
+			}
+		}
+		if(!haveFlgs) {
+			TbItem item = itemService.getItemById(itemId);
+			CartItem cartItem = new CartItem();
+			cartItem.setId(itemId);
+			cartItem.setPrice(item.getPrice());
+			cartItem.setTitle(item.getTitle());
+			cartItem.setNum(num);
+			if(StringUtils.isNotBlank(item.getImage())) {
+				String image = item.getImage();
+				String[] split = image.split(",");
+				cartItem.setImage(split[0]);
+			}
+			itemList.add(cartItem);
+		}
+		// 写入cookie
+		CookieUtils.setCookie(request, response, "KZW_CART", JsonUtils.objectToJson(itemList), COOKIE_EXPIRE, true);
+
+		return KZWResult.ok();
+	}
+
+	private List<CartItem> getCartList(HttpServletRequest request) {
+
+		try {
+			String json = CookieUtils.getCookieValue(request, "KZW_CART", true);
+			List<CartItem> list = JsonUtils.jsonToList(json, CartItem.class);
+
+			return list == null ? new ArrayList<CartItem>() : list;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ArrayList<CartItem>();
+		}
+
+	}
+
+	@Override
+	public List<CartItem> getCartItems(HttpServletRequest request) {
+
+		return this.getCartList(request);
+	}
+
+	@Override
+	public KZWResult updataCartItem(Long itemId, Integer num,
+			HttpServletRequest request, HttpServletResponse response) {
+
+		List<CartItem> itemList = this.getCartList(request);
+		for (CartItem cartItem : itemList) {
+			if(cartItem.getId() == itemId) {
+				cartItem.setNum(num);break;
+			}
+		}
+		CookieUtils.setCookie(request, response, "KZW_CART", JsonUtils.objectToJson(itemList), COOKIE_EXPIRE, true);
+
+		return KZWResult.ok();
+	}
+
+	@Override
+	public KZWResult deleteCartItem(Long itemId, HttpServletRequest request,
+			HttpServletResponse response) {
+
+		List<CartItem> itemList = this.getCartList(request);
+		for (CartItem cartItem : itemList) {
+			if(cartItem.getId() == itemId) {
+				itemList.remove(cartItem);break;
+			}
+		}
+
+		CookieUtils.setCookie(request, response, "KZW_CART", JsonUtils.objectToJson(itemList), COOKIE_EXPIRE, true);
+
+		return KZWResult.ok();
+	}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

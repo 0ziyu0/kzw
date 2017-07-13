@@ -1,0 +1,60 @@
+package com.kzw.portal.controller;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.kzw.portal.service.ContentService;
+
+@Controller
+public class IndexController {
+	
+	@Resource
+	private ContentService contentService;
+
+	@RequestMapping("/index")
+	public String showIndex(Model model) {
+		
+		model.addAttribute("ad1", contentService.getAd1List());
+		
+		return "index";
+	}
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

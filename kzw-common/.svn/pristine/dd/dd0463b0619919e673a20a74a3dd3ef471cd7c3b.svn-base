@@ -1,0 +1,41 @@
+package com.kzw.common.pojo;
+
+public class UserSission {
+
+	private Integer status;
+	private String  msg;
+	private TbUser data;
+	public Integer getStatus() {
+		return status;
+	}
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+	public String getMsg() {
+		return msg;
+	}
+	public void setMsg(String msg) {
+		this.msg = msg;
+	}
+	public TbUser getData() {
+		return data;
+	}
+	public void setData(TbUser data) {
+		this.data = data;
+	}
+	public UserSission() {
+		super();
+	}
+	public UserSission(Integer status, String msg, TbUser data) {
+		super();
+		this.status = status;
+		this.msg = msg;
+		this.data = data;
+	}
+	@Override
+	public String toString() {
+		return "UserSission [status=" + status + ", msg=" + msg + ", data="
+				+ data + "]";
+	}
+	
+}

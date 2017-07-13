@@ -1,0 +1,30 @@
+package com.kzw.mapper;
+
+import com.kzw.pojo.TbPartner;
+import com.kzw.pojo.TbPartnerExample;
+import java.util.List;
+import org.apache.ibatis.annotations.Param;
+
+public interface TbPartnerMapper {
+    int countByExample(TbPartnerExample example);
+
+    int deleteByExample(TbPartnerExample example);
+
+    int deleteByPrimaryKey(Long id);
+
+    int insert(TbPartner record);
+
+    int insertSelective(TbPartner record);
+
+    List<TbPartner> selectByExample(TbPartnerExample example);
+
+    TbPartner selectByPrimaryKey(Long id);
+
+    int updateByExampleSelective(@Param("record") TbPartner record, @Param("example") TbPartnerExample example);
+
+    int updateByExample(@Param("record") TbPartner record, @Param("example") TbPartnerExample example);
+
+    int updateByPrimaryKeySelective(TbPartner record);
+
+    int updateByPrimaryKey(TbPartner record);
+}

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kzw.mapper.StoreOrderMapper" >
+  
+  <select id="selectPage" parameterType="java.util.HashMap" resultType="com.kzw.pojo.StoreOrder">
+		SELECT
+              DISTINCT
+              orders.order_id,
+              item.title,
+              order_item.num,
+              order_item.price,
+              order_item.total_fee,
+              users.username,
+              users.address,
+              users.phone,
+              users.email,
+              orders.status,
+              orders.create_time,
+              orders.payment_type
+            FROM tb_store store,
+              tb_order orders,
+              tb_order_item order_item,
+              tb_order_shipping shipping,
+              tb_user users,
+              tb_item item
+           WHERE 
+                orders.order_id = order_item.order_id 
+                AND orders.order_id = shipping.order_id 
+                AND item.id = order_item.item_id 
+                AND item.store_id = store.id 
+                AND store.user_id = users.id 
+			<if test="storeId != null and storeId !=''">
+			 	AND store.id = #{storeId} 
+			</if>
+			<if test="orderStatus != null and orderStatus !=''">
+			 	AND orders.`status` != 3
+			</if>
+			<if test="orderHistoryStatus != null and orderHistoryStatus !=''">
+			 	AND orders.`status` = 3
+			</if>
+			
+			<if test="phone != null and phone !=''">
+			 	AND users.phone LIKE CONCAT('%',#{phone},'%' ) 
+			</if>
+			<if test="order_id != null and order_id !=''">
+			 	AND orders.order_id LIKE CONCAT('%',#{order_id},'%' ) 
+			</if>
+			<if test="title != null and title !=''">
+			 	AND item.title LIKE CONCAT('%',#{title},'%' ) 
+			</if>
+			<if test="createtime != null and createtime !=''">
+			 	AND unix_timestamp(create_time) &gt;= unix_timestamp(#{createtime}) 
+			</if>
+			<if test="updatetime != null and updatetime !=''">
+			 	AND unix_timestamp(create_time) &lt;= unix_timestamp(#{updatetime}) 
+			</if>
+			
+			ORDER  BY users.id ASC , orders.`status` ASC	
+	</select>
+	
+	<update id="delivery" parameterType="java.util.List">
+		update tb_order set status=2 where order_id IN 
+		<foreach collection="itemIds" item="id" index="index" open="(" separator="," close=")" >  
+        	#{id}  
+    	</foreach> 
+	</update>
+</mapper>

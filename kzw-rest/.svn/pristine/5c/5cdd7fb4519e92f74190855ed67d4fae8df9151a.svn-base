@@ -1,0 +1,80 @@
+package com.kzw.rest.controller;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.converter.json.MappingJacksonValue;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.kzw.common.pojo.KZWResult;
+import com.kzw.rest.pojo.ItemCatResult;
+import com.kzw.rest.service.ItemCatService;
+
+
+@Controller
+@RequestMapping("/item/cat")
+public class ItemCatController {
+
+	@Resource
+	private ItemCatService itemCatService;
+	
+	@RequestMapping("/list")
+	@ResponseBody
+	public Object getItemCatList(String callback) {
+		
+		ItemCatResult result = itemCatService.getItemCatList();
+		if(StringUtils.isBlank(callback)) {
+			return result;
+		}
+		// 如果字符串不为空，需要支持jsonp调用、MappingJacksonValue要求springmvc必须是4.1以上
+		MappingJacksonValue mValue = new MappingJacksonValue(result);
+		mValue.setJsonpFunction(callback);
+		
+		return mValue;
+	}
+	
+	/**
+	 * 首页左侧分类点击跳转
+	 * @param callback
+	 * @return
+	 */
+	@RequestMapping("/products/{parentId}")
+	@ResponseBody
+	public KZWResult products(@PathVariable Long parentId) {
+		
+		return itemCatService.getProductsById(parentId);
+	}
+	
+	
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

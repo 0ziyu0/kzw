@@ -1,0 +1,17 @@
+#内容缓存在redis的key
+IMAGE_SERVICE_ADDR=123.207.137.121
+
+#同步缓存
+REST_BASE_URL=http://localhost:8081/rest
+REST_CONTENT_SYNC_URL=/sync/content/
+
+
+
+
+
+
+
+
+
+
+

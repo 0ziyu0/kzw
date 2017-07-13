@@ -1,0 +1,15 @@
+package com.kzw.service;
+
+import java.util.List;
+
+import com.kzw.common.pojo.EasyUITreeNode;
+
+public interface ItemCatService {
+
+	/**
+	 * 得到分类列表
+	 * @param parentId
+	 * @return
+	 */
+	List<EasyUITreeNode> getItemCatList(long parentId);
+}

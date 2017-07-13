@@ -1,0 +1,23 @@
+package com.kzw.order.service;
+
+import java.util.List;
+
+import com.kzw.order.pojo.OrderInfo;
+import com.kzw.pojo.TbUser;
+
+public interface OrderService {
+
+	/**
+	 * 创建订单
+	 * @param orderInfo
+	 * @return
+	 */
+	String createOrder(OrderInfo orderInfo);
+	
+	/**
+	 * 通过店铺ID查询开店人
+	 * @param storeId
+	 * @return
+	 */
+	List<TbUser> getStoreUser(Long storeId);
+}

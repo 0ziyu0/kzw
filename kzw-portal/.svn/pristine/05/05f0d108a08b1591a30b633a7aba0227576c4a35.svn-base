@@ -1,0 +1,85 @@
+package com.kzw.portal.service.impl;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import com.kzw.common.pojo.KZWResult;
+import com.kzw.common.util.CookieUtils;
+import com.kzw.common.util.HttpClientUtil;
+import com.kzw.pojo.TbUser;
+import com.kzw.portal.service.UserService;
+
+@Service("userService")
+public class UserServiceImpl implements UserService {
+
+	@Value("${SSO_BASE_URL}")
+	private String SSO_BASE_URL;
+	@Value("${SS0_USER_TOKEN_SERVICE}")
+	private String SS0_USER_TOKEN_SERVICE;
+	
+	@Override
+	public TbUser getUserByToken(HttpServletRequest request, HttpServletResponse response) {
+		
+		try {
+			String token = CookieUtils.getCookieValue(request, "KZW_TOKEN");
+			if(StringUtils.isBlank(token)) {
+				return null;
+			}
+			return this.getTbUser(token);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	private TbUser getTbUser(String token) {
+		
+		String json = HttpClientUtil.doGet(SSO_BASE_URL + SS0_USER_TOKEN_SERVICE + token);
+		KZWResult result = KZWResult.format(json);
+		if(result.getStatus() != 200) {
+			return null;
+		}
+		
+		result = KZWResult.formatToPojo(json, TbUser.class);
+		TbUser user = (TbUser) result.getData();
+		
+		return user;
+	}
+
+	@Override
+	public TbUser selectUserByToken(String token) {
+		
+		return this.getTbUser(token);
+	}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

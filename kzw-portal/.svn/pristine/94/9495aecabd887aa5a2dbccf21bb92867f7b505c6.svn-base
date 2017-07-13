@@ -1,0 +1,75 @@
+package com.kzw.portal.controller;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.kzw.common.pojo.KZWResult;
+import com.kzw.pojo.TbItem;
+import com.kzw.portal.pojo.Products;
+import com.kzw.portal.service.ProductsService;
+
+/**
+ * 显示主页面分类跳转
+ * @author 子煜
+ *
+ */
+@Controller
+public class ProductsController {
+
+	@Resource
+	private ProductsService productsService;
+	
+	@RequestMapping("/products/{parentId}")
+	public String getProductsList(@PathVariable Long parentId,@RequestParam(defaultValue="1")Integer page, 
+			@RequestParam(defaultValue="20")Integer rows, 
+			Model model) {
+		
+		KZWResult resultList = productsService.getProductsList(parentId);
+		int curPage = page;
+		int pageCount = 0;
+		int recordCount = 0;
+		int begin = 0;
+		int end = 0;
+		
+		List<Products> list = (List<Products>) resultList.getData();
+		List<Products> result = new ArrayList<>();
+		
+		if(list != null && list.size() > 0) {
+			recordCount = list.size();
+			pageCount = (recordCount / rows);
+			if(recordCount % rows > 0) {
+				pageCount++;
+			}
+			begin = (page-1)*rows;
+			if(begin < 0) {
+				begin = 0;
+			}
+			end = page*rows;
+			if(end > list.size()) {
+				end = list.size();
+			}
+			
+			for(int i = begin; i < end; i++) {
+				Products tbItem = list.get(i);
+				result.add(tbItem);
+			}
+			model.addAttribute("itemList", result);
+		}
+		model.addAttribute("totalPages", pageCount);
+		model.addAttribute("parentId", parentId);
+		//model.addAttribute("itemList", list);
+		model.addAttribute("page", curPage);
+		
+		return "products";
+	}
+	
+	
+}

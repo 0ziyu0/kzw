@@ -1,0 +1,87 @@
+package com.kzw.search.dao.impl;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.SolrServer;
+import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.common.SolrDocument;
+import org.apache.solr.common.SolrDocumentList;
+import org.springframework.stereotype.Repository;
+
+import com.kzw.search.dao.SearchDao;
+import com.kzw.search.pojo.SearchItem;
+import com.kzw.search.pojo.SearchResult;
+
+
+@Repository
+public class SearchDaoImpl implements SearchDao {
+
+	@Resource
+	private SolrServer solrServer;
+	
+	@Override
+	public SearchResult search(SolrQuery query) throws Exception {
+QueryResponse result = solrServer.query(query);
+		
+		SolrDocumentList list = result.getResults();
+		List<SearchItem> itemList = new ArrayList<SearchItem>();
+		SearchResult searchResult = new SearchResult();
+
+		for (SolrDocument document : list) {
+			SearchItem item = new SearchItem();
+//			item.setBuy_price((Long)document.get("buy_price"));
+			item.setCategory_name((String)document.get("item_category_name"));
+			item.setId((String)document.get("id"));
+			item.setImage((String)document.get("item_image"));
+			item.setItem_desc((String)document.get("item_desc"));
+//			item.setNum((Integer)document.get("item_num"));
+			item.setPrice((Long)document.get("item_price"));
+			item.setSell_point((String)document.get("item_sell_point"));
+//			item.setStore_id((String)document.get("store_id"));
+			
+			// 取高亮显示
+			Map<String, Map<String, List<String>>> highLighting = result.getHighlighting();
+			List<String> title_list = highLighting.get(document.get("id")).get("item_title");
+			String title = "";
+			if(title_list != null && title_list.size() > 0) {
+				title= title_list.get(0);
+			} else {
+				title = (String) document.get("item_title");
+			}
+			item.setTitle(title);
+			itemList.add(item);
+		}
+		
+		searchResult.setItemList(itemList);
+		searchResult.setRecordCount(list.getNumFound());
+		
+		return searchResult;
+	}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

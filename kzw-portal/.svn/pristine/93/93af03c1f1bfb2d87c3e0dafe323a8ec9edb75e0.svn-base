@@ -1,0 +1,60 @@
+package com.kzw.portal.service.impl;
+
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import com.kzw.common.pojo.KZWResult;
+import com.kzw.common.util.HttpClientUtil;
+import com.kzw.common.util.JsonUtils;
+import com.kzw.portal.pojo.OrderInfo;
+import com.kzw.portal.service.OrderService;
+
+@Service("orderService")
+public class OrderServiceImpl implements OrderService {
+
+	@Value("${ORDER_BASE_URL}")
+	private String ORDER_BASE_URL;
+	@Value("${ORDER_CREATE_URL}")
+	private String ORDER_CREATE_URL;
+	
+	
+	@Override
+	public String createOrder(OrderInfo orderInfo) {
+		
+		/*Map<String, String> param = BeanUtil.beanToMap(orderInfo);
+		String result = HttpClientUtil.doPost(ORDER_BASE_URL + ORDER_CREATE_URL, param);*/
+		
+		String json = JsonUtils.objectToJson(orderInfo);
+		String result = HttpClientUtil.doPostJson(ORDER_BASE_URL + ORDER_CREATE_URL, json);
+		
+		KZWResult kzwResult = KZWResult.format(result);
+		// 返回订单号
+		String orderId = kzwResult.getData().toString();
+		
+		return orderId;
+	}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

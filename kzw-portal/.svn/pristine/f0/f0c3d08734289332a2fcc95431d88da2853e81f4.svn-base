@@ -1,0 +1,57 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page trimDirectiveWhitespaces="true" %>
+<%@ page session="false" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>店铺注册</title>
+<link href="/css/kzw/reset.css" rel="stylesheet"/>
+<link href="/css/kzw/main.css" rel="stylesheet"/>
+<link href="/css/kzw/uikit.css" rel="stylesheet"/>
+<link href="/css/kzw/components/upload.css" rel="stylesheet"/>
+<link href="/css/kzw/components/form-advanced.css" rel="stylesheet"/>
+<script type="text/javascript" src="/js/jquery-1.6.4.js" charset="utf-8"></script>
+<script type="text/javascript" src="/js/kzw/uikit.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="/js/kzw/components/upload.js" charset="utf-8"></script>
+<script type="text/javascript" src="/js/kzw/components/lightbox.js" charset="utf-8"></script>
+</head>	
+<body style="margin-top: 107px;">
+
+<!-- header start -->
+<%-- <jsp:include page="commons/header.jsp" /> --%>
+<!-- header end -->
+
+<div class="headerBar">
+	<div class="logoBar reg_logo" style="height: 51px;margin-left: 362px;width: 783px;">
+   	  <div class="comWidth">
+        	<div class="logo fl">
+            	<a href="#"><img src="/images/taotao-logo.gif" alt="开张网logo"  height="150" width="90" ></a>
+            </div>
+            <h3 class="welcome_tittle" style="margin-top: -15px;">注册店铺</h3>
+        </div>
+    </div>
+</div>
+
+ <div class="regBox login_cont">
+	<div class="login_cont"> 
+ 		<form class="uk-form" action="/store/saveRegister.action" method="POST">
+			店  铺  名：<input type="text" name="storeName"/ style="margin-left: 7px;"><br/><hr/>
+			店铺描述：<input type="text" name="storeDesc"/><br/><hr/>
+			详细地址：<input type="text" name="storeOther"/><br/><hr/>
+			<input type="submit" class="uk-button uk-button-primary"  value="提交"/>
+ 		</form>
+	</div>
+ </div>
+  
+
+<div class="hr_25"></div>
+
+<!-- footer start -->
+<%-- <jsp:include page="commons/footer.jsp" /> --%>
+<!-- footer end -->
+ 
+<!-- <script type="text/javascript" src="/js/home.js" charset="utf-8"></script> -->
+</body>
+</html>
